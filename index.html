@@ -139,13 +139,20 @@
   .intake-card.open .intake-body{display:block;}
   .flow-note{font-size:11.5px;color:var(--muted);margin:10px 0 4px;font-style:italic;}
 
-  .upload-btn{
-    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
-    background:var(--green);color:#fff;border:none;border-radius:12px;padding:16px;
-    font-size:13.5px;font-weight:700;cursor:pointer;margin-bottom:18px;box-shadow:var(--shadow);
+  .pending-section-h{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin:0 0 8px;}
+  .pending-list{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+  .pending-row{display:flex;align-items:center;gap:12px;background:var(--card-bg);border:1px solid var(--line);border-radius:12px;padding:9px 12px;box-shadow:var(--shadow);}
+  .pending-img{width:36px;height:36px;object-fit:contain;background:#fff;border-radius:7px;border:1px solid var(--line);padding:3px;flex-shrink:0;}
+  .pending-title{font-size:12.5px;font-weight:700;}
+  .pending-sub{font-size:11px;color:var(--muted);}
+  .pending-upload-btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;margin-left:auto;
+    background:var(--green);color:#fff;border:none;border-radius:9px;padding:8px 14px;
+    font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;
   }
-  .upload-btn:disabled{background:var(--panel-bg);color:var(--muted);cursor:not-allowed;box-shadow:none;}
-  .upload-btn:not(:disabled):hover{opacity:.92;}
+  .pending-upload-btn:disabled{background:var(--panel-bg);color:var(--muted);cursor:not-allowed;}
+  .pending-upload-btn:not(:disabled):hover{opacity:.92;}
+  .all-imported-note{border:1px dashed var(--line);border-radius:12px;padding:14px 16px;text-align:center;color:var(--muted);font-size:12.5px;margin-bottom:18px;}
   .empty-intake{border:1px dashed var(--line);border-radius:14px;padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;}
   .checking{color:var(--muted);font-style:italic;}
   .parsing-row{display:flex;align-items:center;gap:10px;padding:14px 0;color:var(--muted);font-size:12.5px;font-style:italic;}
@@ -191,7 +198,8 @@
   <div class="badge-note" id="t-note"></div>
 
   <div id="view-intake" class="view">
-    <button class="upload-btn" id="upload-btn" onclick="uploadPO()"></button>
+    <div id="pending-section"></div>
+    <div id="pending-list"></div>
     <div id="intake-list"></div>
   </div>
 
@@ -269,7 +277,8 @@ var ui = {
     resultLineNoGrade: "This is a documentation and logistics failure, not a product-authenticity issue, so it does not receive a spectrum letter grade. It is flagged here at intake as a {T} and would be blocked from certification until the custody gap is resolved.",
     openInResults: "Open in Certified Results",
     clickToExpand: "Click to see the purchase order and validation trace",
-    uploadBtn: "&#8593; Upload Purchase Order",
+    pendingSection: "Purchase orders awaiting intake",
+    uploadAction: "Upload",
     allImported: "All demo purchase orders imported",
     emptyIntake: "No purchase orders imported yet. Click \"Upload Purchase Order\" above to simulate an importer submitting one.",
     parsing: "Parsing purchase order, extracting product, volume, origin claim, lot and HS code...",
@@ -331,7 +340,8 @@ var ui = {
     resultLineNoGrade: "Questo e un problema di documentazione e logistica, non di autenticita del prodotto, quindi non riceve una lettera di grado sullo spettro. E segnalato qui in fase di acquisizione come {T} e sarebbe bloccato dalla certificazione finche il divario di custodia non viene risolto.",
     openInResults: "Apri in Risultati Certificati",
     clickToExpand: "Fai clic per vedere l'ordine d'acquisto e il percorso di validazione",
-    uploadBtn: "&#8593; Carica Ordine d'Acquisto",
+    pendingSection: "Ordini d'acquisto in attesa di acquisizione",
+    uploadAction: "Carica",
     allImported: "Tutti gli ordini d'acquisto dimostrativi sono stati importati",
     emptyIntake: "Nessun ordine d'acquisto ancora importato. Fai clic su \"Carica Ordine d'Acquisto\" sopra per simulare l'invio da parte di un importatore.",
     parsing: "Analisi dell'ordine d'acquisto in corso, estrazione di prodotto, volume, dichiarazione di origine, lotto e codice HS...",
@@ -484,7 +494,6 @@ var lots = [
 ];
 
 var importedIds = [];
-var importIndex = 0;
 var parsingId = null;
 var revealingId = null;
 var checkedKeys = [];
@@ -567,20 +576,33 @@ function renderStaticText(){
 }
 
 /* ---------- Intake & Validation view ---------- */
-function renderUploadBtn(){
-  var btn = document.getElementById('upload-btn');
+function renderPendingList(){
+  var sectionEl = document.getElementById('pending-section');
+  var listEl = document.getElementById('pending-list');
   var busy = (parsingId !== null || revealingId !== null);
-  if(importIndex >= lots.length){
-    btn.textContent = t().allImported;
-    btn.disabled = true;
-  } else {
-    btn.innerHTML = t().uploadBtn;
-    btn.disabled = busy;
+  var pending = lots.filter(function(l){ return importedIds.indexOf(l.id) === -1; });
+
+  if(pending.length === 0){
+    sectionEl.innerHTML = '';
+    listEl.innerHTML = '<div class="all-imported-note">' + t().allImported + '</div>';
+    return;
   }
+
+  sectionEl.innerHTML = '<div class="pending-section-h">' + t().pendingSection + '</div>';
+  listEl.innerHTML = '';
+  pending.forEach(function(lot){
+    var row = document.createElement('div');
+    row.className = 'pending-row';
+    row.innerHTML =
+      '<img class="pending-img" src="' + lot.img + '" alt="">' +
+      '<div><div class="pending-title">' + lot.title[lang] + '</div><div class="pending-sub">PO ' + lot.po.lot + '</div></div>' +
+      '<button class="pending-upload-btn"' + (busy ? ' disabled' : '') + ' onclick="uploadPO(\'' + lot.id + '\')">&#8593; ' + t().uploadAction + '</button>';
+    listEl.appendChild(row);
+  });
 }
 
 function renderIntakeList(){
-  renderUploadBtn();
+  renderPendingList();
   var container = document.getElementById('intake-list');
   if(importedIds.length === 0){
     container.innerHTML = '<div class="empty-intake">' + t().emptyIntake + '</div>';
@@ -661,10 +683,10 @@ function intakeBodyHTML(lot){
     resultHtml;
 }
 
-function uploadPO(){
-  if(importIndex >= lots.length) return;
-  var lot = lots[importIndex];
-  importIndex++;
+function uploadPO(id){
+  if(importedIds.indexOf(id) !== -1) return;
+  var lot = lots.find(function(l){ return l.id === id; });
+  if(!lot) return;
   importedIds.unshift(lot.id);
   openIntakeId = lot.id;
   parsingId = lot.id;
