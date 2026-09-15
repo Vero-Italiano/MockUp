@@ -1,0 +1,889 @@
+<title>Vero Italiano - Importer Prototype</title>
+<style>
+  :root{
+    --bg:#faf7f2;--card-bg:#ffffff;--ink:#1f2a24;--muted:#6b7570;--line:#e4ded3;
+    --green:#2f5d3a;--green-light:#e7f0e5;--blue:#2c6b8a;--blue-light:#e7f0f5;
+    --gold:#b8862b;--gold-light:#f8efdb;--red-it:#b7312c;--red-light:#fbe7e6;
+    --panel-bg:#f1efe9;--shadow:0 4px 18px rgba(31,42,36,0.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14201a;--card-bg:#1c2b23;--ink:#eef2ee;--muted:#9fb0a5;--line:#2e4136;
+      --green:#4f9464;--green-light:#22362a;--blue:#4a92b8;--blue-light:#1d323d;
+      --gold:#d9a94b;--gold-light:#3a2f18;--red-it:#e2665f;--red-light:#3a2220;
+      --panel-bg:#233229;--shadow:0 4px 18px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14201a;--card-bg:#1c2b23;--ink:#eef2ee;--muted:#9fb0a5;--line:#2e4136;
+    --green:#4f9464;--green-light:#22362a;--blue:#4a92b8;--blue-light:#1d323d;
+    --gold:#d9a94b;--gold-light:#3a2f18;--red-it:#e2665f;--red-light:#3a2220;
+    --panel-bg:#233229;--shadow:0 4px 18px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-block:32px;padding-inline:20px 20px;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;}
+  .h-left h1{font-size:22px;margin:0 0 4px;}
+  .h-left p{color:var(--muted);font-size:13px;margin:0;max-width:620px;line-height:1.5;}
+  .h-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .toggle, .lang-switch{display:flex;gap:4px;background:var(--card-bg);border:1px solid var(--line);border-radius:20px;padding:3px;box-shadow:var(--shadow);}
+  .toggle button, .lang-switch button{border:none;background:transparent;padding:8px 14px;border-radius:16px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);white-space:nowrap;}
+  .lang-switch button{padding:8px 12px;}
+  .toggle button.active, .lang-switch button.active{background:var(--green);color:#fff;}
+  .theme-toggle{border:1px solid var(--line);background:var(--card-bg);border-radius:20px;padding:7px 12px;font-size:13px;cursor:pointer;box-shadow:var(--shadow);color:var(--ink);}
+
+  .breadcrumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;margin:0 0 14px;color:var(--muted);}
+  .breadcrumbs .crumb{color:var(--blue);text-decoration:none;cursor:pointer;}
+  .breadcrumbs .crumb:hover{text-decoration:underline;}
+  .breadcrumbs .crumb.current{color:var(--ink);font-weight:600;cursor:default;text-decoration:none;}
+  .breadcrumbs .crumb-sep{color:var(--muted);opacity:.6;}
+  .badge-note{background:var(--panel-bg);border:1px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+  .lot-card{background:var(--card-bg);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .12s ease;}
+  .lot-card:hover{transform:translateY(-3px);}
+  .lot-img-wrap{position:relative;height:150px;background:#fff;display:flex;align-items:center;justify-content:center;padding:10px;}
+  .lot-img-wrap img{max-width:100%;max-height:130px;object-fit:contain;}
+  .lot-shield{position:absolute;top:8px;left:8px;width:34px;}
+  .lot-lab-badge{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .lot-body{padding:12px 14px 14px;}
+  .lot-tag{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin-bottom:3px;}
+  .lot-title{font-size:13px;font-weight:700;line-height:1.35;margin-bottom:6px;}
+  .lot-status-row{display:flex;gap:5px;}
+  .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .dot.confirmed{background:var(--green);}
+  .dot.flagged{background:var(--red-it);}
+  .dot.pending{background:var(--gold);}
+  .dot.na{background:var(--line);}
+
+  .overlay{display:none;position:fixed;inset:0;background:rgba(20,32,26,0.5);align-items:center;justify-content:center;padding:20px;z-index:60;}
+  .overlay.open{display:flex;}
+  .modal{background:var(--card-bg);border-radius:16px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;padding:26px 28px;box-shadow:0 12px 40px rgba(0,0,0,0.3);position:relative;}
+  .modal-close{position:absolute;top:14px;right:16px;border:none;background:transparent;font-size:20px;cursor:pointer;color:var(--muted);}
+  .modal-top{display:flex;align-items:center;gap:16px;margin-bottom:6px;}
+  .modal-img{width:64px;height:64px;object-fit:contain;background:#fff;border-radius:10px;border:1px solid var(--line);padding:4px;}
+  .modal-shield{width:44px;}
+  .modal-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 3px;}
+  .modal-title{font-size:17px;font-weight:700;margin:0;}
+  .modal-desc{font-size:13px;color:var(--muted);line-height:1.55;margin:14px 0;}
+  .modal-example{background:var(--panel-bg);border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.55;margin-bottom:16px;}
+  .modal-example strong{display:block;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+
+  .section-h{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin:18px 0 8px;}
+  .section-h:first-of-type{margin-top:0;}
+
+  .po-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--panel-bg);border-radius:10px;overflow:hidden;}
+  .po-table td{padding:8px 12px;border-bottom:1px solid var(--line);}
+  .po-table tr:last-child td{border-bottom:none;}
+  .po-table td:first-child{color:var(--muted);width:42%;}
+
+  .evidence-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--line);}
+  .evidence-row:first-of-type{border-top:none;}
+  .ev-dot{width:11px;height:11px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+  .ev-body h5{margin:0 0 2px;font-size:12.5px;}
+  .ev-source{font-size:10.5px;color:var(--blue);font-weight:700;margin:0 0 3px;}
+  .ev-body p{margin:0;font-size:12px;color:var(--muted);line-height:1.5;}
+  .ev-status{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:2px 8px;border-radius:8px;margin-left:auto;flex-shrink:0;height:fit-content;}
+  .ev-status.confirmed{background:var(--green-light);color:var(--green);}
+  .ev-status.flagged{background:var(--red-light);color:var(--red-it);}
+  .ev-status.pending{background:var(--gold-light);color:var(--gold);}
+  .ev-status.na{background:var(--panel-bg);color:var(--muted);}
+
+  .lab-strip{margin-top:16px;background:linear-gradient(135deg,var(--gold-light),var(--panel-bg));border:1px solid var(--gold);border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.55;color:var(--ink);}
+  .lab-strip.pend{border-color:var(--muted);background:var(--panel-bg);}
+  .lab-strip strong{display:block;font-size:12.5px;margin-bottom:4px;color:var(--gold);}
+  .lab-strip.pend strong{color:var(--muted);}
+
+  .cert-btn{margin-top:18px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;}
+  .cert-btn:hover{opacity:.92;}
+
+  .cert{border:2px solid var(--green);border-radius:14px;padding:22px;margin-top:16px;background:var(--card-bg);}
+  .cert-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;}
+  .cert-head h4{margin:0;font-size:15px;}
+  .cert-flag{font-size:11px;color:var(--muted);text-align:right;}
+  .cert-row{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px dashed var(--line);gap:10px;}
+  .cert-row span:first-child{color:var(--muted);flex-shrink:0;}
+  .cert-row span:last-child{text-align:right;}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .queue-card{background:var(--card-bg);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px;}
+  .queue-top{display:flex;gap:14px;align-items:center;margin-bottom:10px;}
+  .queue-img{width:52px;height:52px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid var(--line);padding:4px;flex-shrink:0;}
+  .queue-title{font-size:13.5px;font-weight:700;}
+  .queue-sub{font-size:11.5px;color:var(--muted);}
+  .lab-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+  .lab-form label{font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);display:block;margin-bottom:3px;}
+  .lab-form select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:7px;font-size:12.5px;background:var(--bg);color:var(--ink);}
+  .lab-form .full{grid-column:1/-1;}
+  .submit-btn{margin-top:12px;background:var(--gold);color:#3a2a08;border:none;border-radius:8px;padding:9px 16px;font-size:12.5px;font-weight:700;cursor:pointer;}
+  .empty-queue{color:var(--muted);font-size:13px;padding:30px 0;text-align:center;}
+  .done-tag{background:var(--green-light);color:var(--green);font-size:11px;font-weight:700;text-transform:uppercase;padding:3px 9px;border-radius:8px;margin-left:auto;flex-shrink:0;}
+
+  /* Intake view */
+  .intake-card{background:var(--card-bg);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;}
+  .intake-head{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;}
+  .intake-img{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid var(--line);padding:3px;flex-shrink:0;}
+  .intake-head-title{font-size:13.5px;font-weight:700;}
+  .intake-head-sub{font-size:11.5px;color:var(--muted);}
+  .intake-shield{width:28px;flex-shrink:0;}
+  .intake-caret{margin-left:auto;color:var(--muted);font-size:13px;transition:transform .15s ease;flex-shrink:0;}
+  .intake-card.open .intake-caret{transform:rotate(90deg);}
+  .intake-body{display:none;padding:0 18px 18px;}
+  .intake-card.open .intake-body{display:block;}
+  .flow-note{font-size:11.5px;color:var(--muted);margin:10px 0 4px;font-style:italic;}
+
+  .upload-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    background:var(--green);color:#fff;border:none;border-radius:12px;padding:16px;
+    font-size:13.5px;font-weight:700;cursor:pointer;margin-bottom:18px;box-shadow:var(--shadow);
+  }
+  .upload-btn:disabled{background:var(--panel-bg);color:var(--muted);cursor:not-allowed;box-shadow:none;}
+  .upload-btn:not(:disabled):hover{opacity:.92;}
+  .empty-intake{border:1px dashed var(--line);border-radius:14px;padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;}
+  .checking{color:var(--muted);font-style:italic;}
+  .parsing-row{display:flex;align-items:center;gap:10px;padding:14px 0;color:var(--muted);font-size:12.5px;font-style:italic;}
+  .spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--green);animation:spin .7s linear infinite;flex-shrink:0;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .just-imported{background:var(--green-light);color:var(--green);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:2px 8px;border-radius:8px;margin-left:8px;}
+
+  @media (max-width:640px){
+    .lab-form{grid-template-columns:1fr;}
+    .po-table td:first-child{width:50%;}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="h-left">
+      <h1 id="t-h1"></h1>
+      <p id="t-sub"></p>
+    </div>
+    <div class="h-right">
+      <div class="lang-switch">
+        <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+        <button id="btn-it" onclick="setLang('it')">IT</button>
+      </div>
+      <div class="toggle">
+        <button id="btn-intake" onclick="setView('intake')"></button>
+        <button id="btn-importer" class="active" onclick="setView('importer')"></button>
+        <button id="btn-lab" onclick="setView('lab')"></button>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#127769;</button>
+    </div>
+  </header>
+
+  <nav class="breadcrumbs" id="breadcrumbs"></nav>
+
+  <div class="badge-note" id="t-note"></div>
+
+  <div id="view-intake" class="view">
+    <button class="upload-btn" id="upload-btn" onclick="uploadPO()"></button>
+    <div id="intake-list"></div>
+  </div>
+
+  <div id="view-importer" class="view active">
+    <div class="grid" id="lot-grid"></div>
+  </div>
+
+  <div id="view-lab" class="view">
+    <div id="lab-queue"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+var lang = 'en';
+var openLotId = null;
+var openIntakeId = null;
+var currentView = 'importer';
+
+var ui = {
+  en: {
+    h1: "Vero Italiano - Importer Prototype",
+    sub: "One SKU per authenticity grade, A through G. See the intake process (a Purchase Order and what it takes to validate it), the certified result, and the lab-partner workflow behind the Lab-Verified badge.",
+    note: "Demo data only, for discussion purposes. Purchase orders, evidence-stream statuses and lab results below are illustrative, not live checks.",
+    intakeBtn: "Intake & Validation",
+    importerBtn: "Certified Results",
+    labBtn: "Lab Partner view",
+    method: "Method",
+    result: "Result",
+    custody: "Chain of custody",
+    methodOptions: ["Stable isotope ratio", "DNA barcoding", "NMR profiling"],
+    resultOptions: ["Consistent with declared origin", "Inconsistent with declared origin"],
+    custodyOptions: ["Confirmed, ISO 17025 accredited partner", "Not confirmed"],
+    submitBtn: "Submit result",
+    submitted: "Submitted",
+    emptyQueue: "No test requests currently in queue.",
+    testRequested: "Grade {L} lot, test requested by importer",
+    viewCert: "View exportable certificate",
+    hideCert: "Hide certificate",
+    certTitle: "Vero Italiano Certificate",
+    certProduct: "Product",
+    certLevel: "Certification level",
+    certDoc: "Documentation check",
+    certSat: "Satellite / agronomic check",
+    certCustody: "Chain-of-custody match",
+    certLab: "Lab-Verified badge",
+    certAnchor: "Certificate anchor",
+    certAnchorNote: "Anchored on a tamper-evident ledger, any edit after issuance invalidates this hash",
+    certYes: "Yes",
+    certNo: "No",
+    certIssued: "Issued",
+    certIssuedNote: "Demo certificate, for discussion only",
+    discrepancies: "Discrepancies flagged for review",
+    noDiscrepancies: "No discrepancies found",
+    context: "Context",
+    labVerified: "Lab-Verified",
+    labPending: "Lab test pending",
+    statusLabel: {confirmed:"Validated", flagged:"Rejected", pending:"Missing", na:"Not required", verified:"Verified"},
+    poSection: "Purchase order as submitted",
+    poProduct: "Product / claim",
+    poVolume: "Declared volume",
+    poOrigin: "Origin claim",
+    poLot: "Lot number",
+    poHs: "HS code",
+    poSupplier: "Supplier / exporter",
+    reqSection: "Required validation, derived from the claim above",
+    resultSection: "Resulting certification",
+    resultLine: "This lot resolves to Grade {L}, {T}.",
+    openInResults: "Open in Certified Results",
+    clickToExpand: "Click to see the purchase order and validation trace",
+    uploadBtn: "&#8593; Upload Purchase Order",
+    allImported: "All demo purchase orders imported",
+    emptyIntake: "No purchase orders imported yet. Click \"Upload Purchase Order\" above to simulate an importer submitting one.",
+    parsing: "Parsing purchase order, extracting product, volume, origin claim, lot and HS code...",
+    checking: "Checking...",
+    justImported: "Just imported",
+    crumbPo: "PO {L}"
+  },
+  it: {
+    h1: "Vero Italiano - Prototipo Importatore",
+    sub: "Un SKU per ogni grado di autenticita, da A a G. Vedi il processo di acquisizione (un ordine d'acquisto e cosa serve per validarlo), il risultato certificato e il flusso del partner di laboratorio dietro il badge Lab-Verified.",
+    note: "Solo dati dimostrativi, a scopo di discussione. Ordini d'acquisto, stati dei flussi di evidenza e risultati di laboratorio sottostanti sono illustrativi, non verifiche in tempo reale.",
+    intakeBtn: "Acquisizione e Validazione",
+    importerBtn: "Risultati Certificati",
+    labBtn: "Vista partner di laboratorio",
+    method: "Metodo",
+    result: "Risultato",
+    custody: "Catena di custodia",
+    methodOptions: ["Analisi del rapporto isotopico stabile", "Codice a barre del DNA", "Profilazione NMR"],
+    resultOptions: ["Coerente con l'origine dichiarata", "Non coerente con l'origine dichiarata"],
+    custodyOptions: ["Confermata, partner accreditato ISO 17025", "Non confermata"],
+    submitBtn: "Invia risultato",
+    submitted: "Inviato",
+    emptyQueue: "Nessuna richiesta di test attualmente in coda.",
+    testRequested: "Lotto di grado {L}, test richiesto dall'importatore",
+    viewCert: "Visualizza certificato esportabile",
+    hideCert: "Nascondi certificato",
+    certTitle: "Certificato Vero Italiano",
+    certProduct: "Prodotto",
+    certLevel: "Livello di certificazione",
+    certDoc: "Verifica documentale",
+    certSat: "Verifica satellitare / agronomica",
+    certCustody: "Corrispondenza catena di custodia",
+    certLab: "Badge Lab-Verified",
+    certAnchor: "Ancoraggio del certificato",
+    certAnchorNote: "Ancorato su un registro a prova di manomissione, qualsiasi modifica dopo l'emissione invalida questo hash",
+    certYes: "Si",
+    certNo: "No",
+    certIssued: "Emesso",
+    certIssuedNote: "Certificato dimostrativo, solo a scopo di discussione",
+    discrepancies: "Discrepanze segnalate per revisione",
+    noDiscrepancies: "Nessuna discrepanza riscontrata",
+    context: "Contesto",
+    labVerified: "Lab-Verified",
+    labPending: "Test di laboratorio in attesa",
+    statusLabel: {confirmed:"Validato", flagged:"Respinto", pending:"Mancante", na:"Non richiesto", verified:"Verificato"},
+    poSection: "Ordine d'acquisto come inviato",
+    poProduct: "Prodotto / dichiarazione",
+    poVolume: "Volume dichiarato",
+    poOrigin: "Dichiarazione di origine",
+    poLot: "Numero di lotto",
+    poHs: "Codice HS",
+    poSupplier: "Fornitore / esportatore",
+    reqSection: "Validazione richiesta, derivata dalla dichiarazione sopra",
+    resultSection: "Certificazione risultante",
+    resultLine: "Questo lotto risulta in Grado {L}, {T}.",
+    openInResults: "Apri in Risultati Certificati",
+    clickToExpand: "Fai clic per vedere l'ordine d'acquisto e il percorso di validazione",
+    uploadBtn: "&#8593; Carica Ordine d'Acquisto",
+    allImported: "Tutti gli ordini d'acquisto dimostrativi sono stati importati",
+    emptyIntake: "Nessun ordine d'acquisto ancora importato. Fai clic su \"Carica Ordine d'Acquisto\" sopra per simulare l'invio da parte di un importatore.",
+    parsing: "Analisi dell'ordine d'acquisto in corso, estrazione di prodotto, volume, dichiarazione di origine, lotto e codice HS...",
+    checking: "Verifica in corso...",
+    justImported: "Appena importato",
+    crumbPo: "Ordine {L}"
+  }
+};
+
+var lots = [
+  {id:'a', letter:'A', color:'#1f6b3a', img:'images/a-parmigiano.png',
+   tag:{en:"Fully Verified", it:"Pienamente Verificato"},
+   title:{en:"Parmigiano Reggiano DOP wheel, 24-month aged", it:"Forma di Parmigiano Reggiano DOP, stagionata 24 mesi"},
+   desc:{en:"Product and ingredients both originate in Italy, with traceability back to the production zone. The gold standard, and rare in bulk commodity categories.",
+         it:"Prodotto e ingredienti hanno entrambi origine in Italia, con tracciabilita fino alla zona di produzione. Lo standard piu alto, raro nelle categorie di commodity di massa."},
+   example:{en:"Real precedent: the fire-branded crown mark on the rind is the consortium's own anti-counterfeiting measure, though it was itself forged once before (circa 2008, roughly 1,000 unearned hams), which is why Vero Italiano cross-checks documentation and registry data rather than relying on the mark alone.",
+            it:"Precedente reale: il marchio a fuoco sulla crosta e la misura anticontraffazione del consorzio stesso, sebbene sia stato a sua volta falsificato una volta (circa 2008, circa 1.000 forme non meritate), motivo per cui Vero Italiano incrocia documentazione e dati di registro invece di affidarsi solo al marchio."},
+   po:{product:{en:"Parmigiano Reggiano DOP, 24-month aged wheels", it:"Parmigiano Reggiano DOP, forme stagionate 24 mesi"},
+       volume:{en:"180 wheels (approx. 6,480 kg)", it:"180 forme (circa 6.480 kg)"},
+       origin:{en:"DOP, Emilia-Romagna production zone", it:"DOP, zona di produzione Emilia-Romagna"},
+       lot:"PR-2026-0417", hs:"0406.90", supplier:"Caseificio Sociale (consortium member)"},
+   evidence:{
+     doc:{status:'confirmed', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"e-Ambrosia consortium register + forensic OCR of CSQA inspection certificate", it:"Registro e-Ambrosia del consorzio + OCR forense del certificato d'ispezione CSQA"}, note:{en:"Consortium registry membership and DOP zone records confirmed against the e-Ambrosia register. The accredited body's own inspection certificate (CSQA) was ingested and authenticated directly via forensic OCR, rather than relying on a self-reported copy.", it:"Iscrizione al registro del consorzio e dati della zona DOP confermati rispetto al registro e-Ambrosia. Il certificato d'ispezione dell'ente accreditato (CSQA) e stato acquisito e autenticato direttamente tramite OCR forense, anziche affidarsi a una copia autodichiarata."}},
+     sat:{status:'confirmed', label:{en:"Satellite / agronomic plausibility", it:"Plausibilita satellitare / agronomica"}, source:{en:"Copernicus Sentinel-2 (NDVI) + ISMEA yield benchmarks", it:"Copernicus Sentinel-2 (NDVI) + benchmark di resa ISMEA"}, note:{en:"Declared milk volume consistent with ISMEA regional benchmarks for the production zone.", it:"Volume di latte dichiarato coerente con i benchmark regionali ISMEA per la zona di produzione."}},
+     custody:{status:'confirmed', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Container seal numbers and shipped weight match the purchase order and invoice within tolerance, no diversion or substitution detected in transit.", it:"I numeri di sigillo del container e il peso spedito corrispondono all'ordine d'acquisto e alla fattura entro la tolleranza, nessuna deviazione o sostituzione rilevata durante il trasporto."}},
+     lab:{status:'verified', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"ISO 17025 accredited lab partner", it:"Partner di laboratorio accreditato ISO 17025"}, note:{en:"Isotope ratio analysis confirms milk origin consistent with declared zone.", it:"L'analisi del rapporto isotopico conferma un'origine del latte coerente con la zona dichiarata."}}
+   }},
+  {id:'b', letter:'B', color:'#4c8a5c', img:'images/b-pasta.png',
+   tag:{en:"Substantially Verified", it:"Sostanzialmente Verificato"},
+   title:{en:"Artisan bronze-die pasta, Italian durum wheat", it:"Pasta artigianale trafilata al bronzo, grano duro italiano"},
+   desc:{en:"Manufacturing and the traditional core ingredient are Italian, though sourcing is not guaranteed batch to batch, a shrinking category as domestic durum output falls short of demand.",
+         it:"La produzione e l'ingrediente tradizionale principale sono italiani, sebbene l'approvvigionamento non sia garantito lotto per lotto: una categoria in calo poiche la produzione nazionale di grano duro non copre la domanda."},
+   example:{en:"Represents artisan pastificios using Italian-grown grano duro (e.g. Senatore Cappelli wheat). No specific producer is named in this example.",
+            it:"Rappresenta i pastifici artigianali che usano grano duro coltivato in Italia (ad es. grano Senatore Cappelli). Nessun produttore specifico e citato in questo esempio."},
+   po:{product:{en:"Artisan bronze-die rigatoni, semola di grano duro", it:"Rigatoni artigianali trafilati al bronzo, semola di grano duro"},
+       volume:{en:"4,200 kg", it:"4.200 kg"},
+       origin:{en:"Made in Italy, 100% Italian durum wheat claimed", it:"Made in Italy, dichiarato 100% grano duro italiano"},
+       lot:"PB-2026-1103", hs:"1902.19", supplier:"Pastificio Pietrabianca"},
+   evidence:{
+     doc:{status:'confirmed', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Producer invoices and mill records", it:"Fatture del produttore e registri del mulino"}, note:{en:"Producer invoices and lot records confirm Italian milling and packaging.", it:"Fatture del produttore e registri di lotto confermano macinazione e confezionamento italiani."}},
+     sat:{status:'confirmed', label:{en:"Satellite / agronomic plausibility", it:"Plausibilita satellitare / agronomica"}, source:{en:"Copernicus Sentinel-2 (NDVI) + ISMEA yield benchmarks", it:"Copernicus Sentinel-2 (NDVI) + benchmark di resa ISMEA"}, note:{en:"Declared durum wheat volume plausible for the stated growing region this season.", it:"Volume di grano duro dichiarato plausibile per la regione di coltivazione indicata in questa stagione."}},
+     custody:{status:'confirmed', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Container seal numbers and shipped weight match the purchase order and invoice within tolerance.", it:"I numeri di sigillo del container e il peso spedito corrispondono all'ordine d'acquisto e alla fattura entro la tolleranza."}},
+     lab:{status:'pending', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"ISO 17025 accredited lab partner", it:"Partner di laboratorio accreditato ISO 17025"}, note:{en:"Test requested by importer, awaiting lab submission.", it:"Test richiesto dall'importatore, in attesa dell'invio del laboratorio."}}
+   }},
+  {id:'c', letter:'C', color:'#8a9a52', img:'images/c-oliveoil-berio.png',
+   tag:{en:"Made in Italy, Sourced Abroad", it:"Fatto in Italia, Approvvigionato all'Estero"},
+   title:{en:"Extra virgin olive oil, bottled in Italy", it:"Olio extravergine d'oliva, imbottigliato in Italia"},
+   desc:{en:"Manufacturing genuinely happens in Italy, but the primary raw material is imported, often undisclosed on the front label.",
+         it:"La lavorazione avviene realmente in Italia, ma la materia prima principale e importata, spesso non dichiarata in etichetta frontale."},
+   example:{en:"Italy is a net importer of olive oil: Spanish, Greek, Tunisian and Moroccan oil is shipped in bulk, bottled in Italy, and sold as Italian olive oil.",
+            it:"L'Italia e un importatore netto di olio d'oliva: olio spagnolo, greco, tunisino e marocchino viene spedito sfuso, imbottigliato in Italia e venduto come olio d'oliva italiano."},
+   po:{product:{en:"Extra virgin olive oil, 750ml bottles", it:"Olio extravergine d'oliva, bottiglie da 750ml"},
+       volume:{en:"18,000 bottles (approx. 13,500 L)", it:"18.000 bottiglie (circa 13.500 L)"},
+       origin:{en:"\"Imbottigliato in Italia\", Italian olive oil implied on front label", it:"\"Imbottigliato in Italia\", olio d'oliva italiano implicito in etichetta frontale"},
+       lot:"OL-2026-0289", hs:"1509.10", supplier:"Frantoio distributor (bottling only)"},
+   evidence:{
+     doc:{status:'flagged', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Customs import declarations, cross-checked against bill-of-lading and packaging ratios", it:"Dichiarazioni doganali di importazione, incrociate con polizza di carico e rapporti di confezionamento"}, note:{en:"Customs and invoice records show bulk oil imported from outside Italy prior to bottling. Cross-document triangulation of the customs declaration against bill-of-lading volumes and finished-case packaging ratios confirms the imported bulk oil accounts for the labeled output, a gap not disclosed on the front label.", it:"I documenti doganali e le fatture mostrano olio sfuso importato da fuori Italia prima dell'imbottigliamento. La triangolazione incrociata tra la dichiarazione doganale, i volumi della polizza di carico e i rapporti di confezionamento del prodotto finito conferma che l'olio sfuso importato copre la produzione etichettata, un'informazione non dichiarata in etichetta frontale."}},
+     sat:{status:'flagged', label:{en:"Chemical / isotopic plausibility (COA)", it:"Plausibilita chimica / isotopica (COA)"}, source:{en:"Certificate of analysis: acidity, peroxide value, isotopic profile", it:"Certificato di analisi: acidita, indice di perossidi, profilo isotopico"}, note:{en:"For a blended, bottling-only product like this, satellite tracking cannot verify a single field of origin, so plausibility is assessed instead from the certificate of analysis: acidity, peroxide value and isotopic profile are checked against known regional reference ranges. This lot's profile is consistent with a Mediterranean but non-Italian origin blend.", it:"Per un prodotto miscelato e di solo imbottigliamento come questo, il monitoraggio satellitare non puo verificare un singolo campo di origine: la plausibilita viene quindi valutata a partire dal certificato di analisi, verificando acidita, indice di perossidi e profilo isotopico rispetto a range di riferimento regionali noti. Il profilo di questo lotto e coerente con una miscela di origine mediterranea ma non italiana."}},
+     custody:{status:'flagged', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Shipped bulk weight exceeds what the declared Italian-only sourcing would plausibly yield, consistent with the undisclosed foreign-sourced volume found in the documentation check.", it:"Il peso sfuso spedito supera quanto l'approvvigionamento dichiarato di sola origine italiana potrebbe plausibilmente produrre, coerente con il volume di origine estera non dichiarato riscontrato nella verifica documentale."}},
+     lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
+   }},
+  {id:'d', letter:'D', color:'#b8862b', img:'images/d-tomatoes.png',
+   tag:{en:"Packaging Only", it:"Solo Confezionamento"},
+   title:{en:"Canned peeled tomatoes, Italian-style labeling", it:"Pomodori pelati in scatola, etichettatura in stile italiano"},
+   desc:{en:"The only Italian step is the finishing or packaging stage, sometimes enough to legally claim Made in Italy under last-substantial-transformation rules.",
+         it:"L'unica fase italiana e la lavorazione finale o il confezionamento, a volte sufficiente per rivendicare legalmente il Made in Italy secondo le regole dell'ultima trasformazione sostanziale."},
+   example:{en:"Represents the pattern behind the Petti case: tomato paste sourced abroad, blended and canned under Italian-sounding branding. This lot is an illustrative example, not the Petti product itself.",
+            it:"Rappresenta lo schema alla base del caso Petti: concentrato di pomodoro approvvigionato all'estero, miscelato e inscatolato con un marchio dal suono italiano. Questo lotto e un esempio illustrativo, non il prodotto Petti stesso."},
+   po:{product:{en:"Canned peeled tomatoes, 400g", it:"Pomodori pelati in scatola, 400g"},
+       volume:{en:"60,000 cans", it:"60.000 lattine"},
+       origin:{en:"\"100% Italian tomatoes\" claimed on label", it:"\"100% pomodori italiani\" dichiarato in etichetta"},
+       lot:"TC-2026-0552", hs:"2002.10", supplier:"Regional canning facility"},
+   evidence:{
+     doc:{status:'flagged', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Customs import declarations, cross-checked against bill-of-lading and packaging ratios", it:"Dichiarazioni doganali di importazione, incrociate con polizza di carico e rapporti di confezionamento"}, note:{en:"Customs records show tomato paste concentrate imported prior to canning, inconsistent with the \"100% Italian tomatoes\" label claim. Cross-document triangulation of the customs entry against bill-of-lading weights and the facility's own can-output ratio shows the imported concentrate volume alone accounts for the finished case count.", it:"I documenti doganali mostrano concentrato di pomodoro importato prima dell'inscatolamento, incoerente con la dicitura in etichetta \"100% pomodori italiani\". La triangolazione incrociata tra la dichiarazione doganale, i pesi della polizza di carico e il rapporto di produzione dell'impianto mostra che il solo volume di concentrato importato copre il numero di casse finite."}},
+     sat:{status:'flagged', label:{en:"Chemical / isotopic plausibility (COA)", it:"Plausibilita chimica / isotopica (COA)"}, source:{en:"Certificate of analysis: acidity, peroxide value, isotopic profile", it:"Certificato di analisi: acidita, indice di perossidi, profilo isotopico"}, note:{en:"Tomato paste is a blended, multi-source product where satellite plots cannot be tied to a single canning run, so plausibility is assessed instead from the certificate of analysis. The isotopic profile is inconsistent with tomatoes grown in the claimed Italian region this season.", it:"Il concentrato di pomodoro e un prodotto miscelato multi-fonte per cui gli appezzamenti satellitari non possono essere collegati a una singola produzione di inscatolamento: la plausibilita viene quindi valutata dal certificato di analisi. Il profilo isotopico e incoerente con pomodori coltivati nella regione italiana dichiarata in questa stagione."}},
+     custody:{status:'flagged', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Bill-of-lading weight on the imported concentrate shipment is inconsistent with a facility sourcing \"100% Italian tomatoes,\" matching the pattern found in the documentation check.", it:"Il peso della polizza di carico sulla spedizione di concentrato importato e incoerente con un impianto che si approvvigiona al \"100% di pomodori italiani\", coerente con lo schema riscontrato nella verifica documentale."}},
+     lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
+   }},
+  {id:'e', letter:'E', color:'#c9772f', img:'images/e-oliveoil-plain.png',
+   tag:{en:"Brand Only, Real Ingredients", it:"Solo Marchio, Ingredienti Reali"},
+   title:{en:"Olive oil, bottled abroad from Italian-sourced oil", it:"Olio d'oliva, imbottigliato all'estero da olio di origine italiana"},
+   desc:{en:"A genuine Italian company manufactures locally in a foreign market to serve it efficiently, importing bulk Italian ingredients to preserve authenticity.",
+         it:"Un'azienda italiana genuina produce localmente in un mercato estero per servirlo in modo efficiente, importando ingredienti italiani sfusi per preservare l'autenticita."},
+   example:{en:"Some Italian olive oil producers ship bulk Italian-origin oil to be bottled at destination-market facilities rather than in Italy. No specific producer is named in this example.",
+            it:"Alcuni produttori italiani di olio d'oliva spediscono olio sfuso di origine italiana da imbottigliare presso impianti nel mercato di destinazione anziche in Italia. Nessun produttore specifico e citato in questo esempio."},
+   po:{product:{en:"Olive oil, bottled at destination-market facility", it:"Olio d'oliva, imbottigliato presso impianto nel mercato di destinazione"},
+       volume:{en:"9,600 L bulk", it:"9.600 L sfuso"},
+       origin:{en:"Bulk oil sourced from Italy, bottled locally", it:"Olio sfuso di origine italiana, imbottigliato localmente"},
+       lot:"OB-2026-0741", hs:"1509.10", supplier:"Italian producer, destination bottler"},
+   evidence:{
+     doc:{status:'confirmed', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Bulk shipment invoices and origin certificates", it:"Fatture di spedizione sfusa e certificati di origine"}, note:{en:"Import records confirm the bulk oil itself originated in Italy, even though bottling happens at destination.", it:"I documenti di importazione confermano che l'olio sfuso ha origine italiana, anche se l'imbottigliamento avviene a destinazione."}},
+     sat:{status:'na', label:{en:"Satellite / agronomic plausibility", it:"Plausibilita satellitare / agronomica"}, source:{en:"Not queried, cultivation data belongs to Italian source", it:"Non interrogato, i dati di coltivazione appartengono alla fonte italiana"}, note:{en:"Not applicable, cultivation and yield data belong to the Italian source, not the bottling facility.", it:"Non applicabile, i dati di coltivazione e resa appartengono alla fonte italiana, non all'impianto di imbottigliamento."}},
+     custody:{status:'confirmed', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Container seal numbers and bulk shipment weight from the Italian source match the destination-market bottler's intake records within tolerance.", it:"I numeri di sigillo del container e il peso della spedizione sfusa dalla fonte italiana corrispondono ai registri di ricezione dell'imbottigliatore nel mercato di destinazione entro la tolleranza."}},
+     lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
+   }},
+  {id:'f', letter:'F', color:'#c14f38', img:'images/f-barilla.png',
+   tag:{en:"Brand Only", it:"Solo Marchio"},
+   title:{en:"Pasta, U.S.-manufactured by an Italian brand", it:"Pasta, prodotta negli Stati Uniti da un marchio italiano"},
+   desc:{en:"The company and heritage are genuinely Italian, but the product sold in a given market is manufactured locally end to end.",
+         it:"L'azienda e il patrimonio sono genuinamente italiani, ma il prodotto venduto in un dato mercato e prodotto localmente dall'inizio alla fine."},
+   example:{en:"Barilla and Giovanni Rana both run U.S. manufacturing plants using North American wheat for the North American market, disclosed and legal, just not Italian-made.",
+            it:"Sia Barilla che Giovanni Rana gestiscono stabilimenti produttivi negli Stati Uniti usando grano nordamericano per il mercato nordamericano: dichiarato e legale, semplicemente non prodotto in Italia."},
+   po:{product:{en:"Elbow pasta, U.S.-manufactured", it:"Pasta elbow, prodotta negli Stati Uniti"},
+       volume:{en:"22,000 kg", it:"22.000 kg"},
+       origin:{en:"Italian brand, U.S. manufacturing disclosed", it:"Marchio italiano, produzione statunitense dichiarata"},
+       lot:"PF-2026-2210", hs:"1902.19", supplier:"Italian-brand U.S. subsidiary"},
+   evidence:{
+     doc:{status:'confirmed', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Brand disclosure filings and plant records", it:"Documenti di dichiarazione del marchio e registri di stabilimento"}, note:{en:"Manufacturing location and North American wheat sourcing are consistent with the brand's own disclosures.", it:"La sede produttiva e l'approvvigionamento di grano nordamericano sono coerenti con le dichiarazioni dello stesso marchio."}},
+     sat:{status:'na', label:{en:"Satellite / agronomic plausibility", it:"Plausibilita satellitare / agronomica"}, source:{en:"Not queried, no Italian cultivation claimed", it:"Non interrogato, nessuna coltivazione italiana dichiarata"}, note:{en:"Not applicable, no Italian cultivation claim is being made for this SKU.", it:"Non applicabile, per questo SKU non si dichiara alcuna coltivazione italiana."}},
+     custody:{status:'na', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Not applicable, no Italian-origin shipment leg", it:"Non applicabile, nessuna tratta di spedizione di origine italiana"}, note:{en:"Not applicable, manufacturing is entirely local to the market, there is no Italian-origin shipment to match.", it:"Non applicabile, la produzione e interamente locale al mercato, non esiste una spedizione di origine italiana da verificare."}},
+     lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
+   }},
+  {id:'g', letter:'G', color:'#b7312c', img:'images/g-sauce.png',
+   tag:{en:"Evocative Only", it:"Solo Evocativo"},
+   title:{en:"Pasta sauce, Italian-sounding branding", it:"Sugo per pasta, marchio dal suono italiano"},
+   desc:{en:"No Italian ownership, manufacturing, or sourcing, just a name, flag colors, or imagery designed to evoke Italy.",
+         it:"Nessuna proprieta, produzione o approvvigionamento italiani: solo un nome, i colori della bandiera o un'immagine pensata per evocare l'Italia."},
+   example:{en:"Represents the Bertolli pasta sauce pattern: now owned by Mizkan and made in Kentucky and California with U.S. tomatoes, a real example of a fully evocative brand. This lot is an illustrative stand-in, not the Bertolli product itself.",
+            it:"Rappresenta lo schema del sugo Bertolli: oggi di proprieta di Mizkan e prodotto in Kentucky e California con pomodori statunitensi, un esempio reale di marchio pienamente evocativo. Questo lotto e un sostituto illustrativo, non il prodotto Bertolli stesso."},
+   po:{product:{en:"Pasta sauce, 24oz jars", it:"Sugo per pasta, vasetti da 24oz"},
+       volume:{en:"40,000 jars", it:"40.000 vasetti"},
+       origin:{en:"Italian-sounding branding, no origin claim in fine print", it:"Marchio dal suono italiano, nessuna dichiarazione di origine nel testo in piccolo"},
+       lot:"SC-2026-0913", hs:"2103.90", supplier:"U.S.-based brand, no Italian entity"},
+   evidence:{
+     doc:{status:'flagged', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Corporate ownership and facility registry", it:"Registro societario e degli impianti"}, note:{en:"No Italian entity, facility, or ingredient appears anywhere in the supply chain documentation.", it:"Nessuna entita, impianto o ingrediente italiano compare nella documentazione della filiera."}},
+     sat:{status:'na', label:{en:"Satellite / agronomic plausibility", it:"Plausibilita satellitare / agronomica"}, source:{en:"Not queried, no Italian cultivation claimed", it:"Non interrogato, nessuna coltivazione italiana dichiarata"}, note:{en:"Not applicable, no Italian cultivation claim is being made.", it:"Non applicabile, non si dichiara alcuna coltivazione italiana."}},
+     custody:{status:'na', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Not applicable, no Italian-origin shipment leg", it:"Non applicabile, nessuna tratta di spedizione di origine italiana"}, note:{en:"Not applicable, there is no Italian-origin shipment for this SKU to match against.", it:"Non applicabile, non esiste per questo SKU una spedizione di origine italiana da verificare."}},
+     lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
+   }},
+  {id:'h', letter:'H', color:'#6b5b95', img:'images/h-prosciutto.png',
+   tag:{en:"Custody Mismatch", it:"Discrepanza di Custodia"},
+   title:{en:"DOP prosciutto, documentation and lab clean, pallets do not match", it:"Prosciutto DOP, documentazione e laboratorio regolari, i pallet non corrispondono"},
+   desc:{en:"Every stream that checks the product itself passes. Only the shipment's own chain-of-custody record, container seals, pallet counts and weights measured against the purchase order, exposes the problem: more pallets left the consortium facility under this lot number than arrived at the port of export.",
+         it:"Ogni flusso che verifica il prodotto stesso e superato. Solo il registro della catena di custodia della spedizione, sigilli del container, conteggio dei pallet e pesi misurati rispetto all'ordine d'acquisto, rivela il problema: sono usciti dallo stabilimento del consorzio piu pallet con questo numero di lotto di quanti ne siano arrivati al porto di esportazione."},
+   example:{en:"Not a named real-world case. Built to show why Vero Italiano tracks custody at the lot, pallet and container level rather than certifying a product description alone: paperwork and lab results can be entirely genuine for the product tested while some of the physical shipment is diverted or substituted in transit.",
+            it:"Non e un caso reale con nome. Costruito per mostrare perche Vero Italiano traccia la custodia a livello di lotto, pallet e container invece di certificare solo una descrizione di prodotto: la documentazione e i risultati di laboratorio possono essere del tutto genuini per il prodotto testato, mentre parte della spedizione fisica viene deviata o sostituita durante il trasporto."},
+   po:{product:{en:"Prosciutto di Parma DOP, whole legs, bone-in", it:"Prosciutto di Parma DOP, cosce intere, con osso"},
+       volume:{en:"14 pallets, 3 containers (approx. 8,400 kg)", it:"14 pallet, 3 container (circa 8.400 kg)"},
+       origin:{en:"DOP, Parma production zone", it:"DOP, zona di produzione Parma"},
+       lot:"PP-2026-0688", hs:"0210.11", supplier:"Consortium curing facility"},
+   evidence:{
+     doc:{status:'confirmed', label:{en:"Documentation cross-check", it:"Verifica incrociata documentale"}, source:{en:"Consortium register and DOP zone records", it:"Registro del consorzio e dati della zona DOP"}, note:{en:"Curing facility, DOP zone, and consortium membership all confirmed for the declared lot number.", it:"Stabilimento di stagionatura, zona DOP e iscrizione al consorzio confermati per il numero di lotto dichiarato."}},
+     sat:{status:'confirmed', label:{en:"Satellite / agronomic plausibility", it:"Plausibilita satellitare / agronomica"}, source:{en:"Copernicus Sentinel-2 (NDVI) + ISMEA yield benchmarks", it:"Copernicus Sentinel-2 (NDVI) + benchmark di resa ISMEA"}, note:{en:"Declared herd size and feed sourcing consistent with regional benchmarks for the production zone.", it:"Dimensione della mandria dichiarata e approvvigionamento di mangime coerenti con i benchmark regionali per la zona di produzione."}},
+     custody:{status:'flagged', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712), pallet counts and bill-of-lading weights", it:"Sigilli del container (ISO 17712), conteggio dei pallet e pesi della polizza di carico"}, note:{en:"14 pallets were sealed and logged leaving the curing facility under this lot number, but only 11 pallets and their matching seal numbers arrived at the port of export. The 3-pallet, roughly 1,800kg gap was never flagged by the documentation or lab checks, which only examine the product itself, not the physical shipment as a unit.", it:"14 pallet sono stati sigillati e registrati in uscita dallo stabilimento di stagionatura con questo numero di lotto, ma solo 11 pallet e i relativi numeri di sigillo corrispondenti sono arrivati al porto di esportazione. Il divario di 3 pallet, circa 1.800kg, non e mai stato segnalato dai controlli documentali o di laboratorio, che esaminano solo il prodotto stesso, non la spedizione fisica come unita."}},
+     lab:{status:'verified', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"ISO 17025 accredited lab partner", it:"Partner di laboratorio accreditato ISO 17025"}, note:{en:"Isotope ratio analysis on the sampled legs confirms origin consistent with the declared zone, the tested product is genuine, the discrepancy is in quantity, not authenticity.", it:"L'analisi del rapporto isotopico sulle cosce campionate conferma un'origine coerente con la zona dichiarata, il prodotto testato e genuino, la discrepanza riguarda la quantita, non l'autenticita."}}
+   }}
+];
+
+var importedIds = [];
+var importIndex = 0;
+var parsingId = null;
+var revealingId = null;
+var checkedKeys = [];
+
+function t(){ return ui[lang]; }
+function statusClass(st){ return st === 'verified' ? 'confirmed' : st; }
+
+function shieldSVG(color, letter, size){
+  size = size || 34;
+  var h = Math.round(size * 72 / 64);
+  return '<svg viewBox="0 0 64 72" width="' + size + '" height="' + h + '">' +
+    '<path d="M32 2 L60 12 L60 34 C60 54 48 66 32 70 C16 66 4 54 4 34 L4 12 Z" fill="' + color + '" stroke="#1f2a24" stroke-opacity="0.15" stroke-width="2"/>' +
+    '<text x="32" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff" font-family="-apple-system,Helvetica,Arial,sans-serif">' + letter + '</text>' +
+    '</svg>';
+}
+
+function viewLabel(){
+  return currentView === 'intake' ? t().intakeBtn : (currentView === 'lab' ? t().labBtn : t().importerBtn);
+}
+
+function crumbGoView(){
+  openIntakeId = null;
+  closeModal();
+  renderIntakeList();
+  renderBreadcrumbs();
+}
+function crumbGoLot(){
+  certOpen = false;
+  renderCert();
+  renderBreadcrumbs();
+}
+
+function renderBreadcrumbs(){
+  var nav = document.getElementById('breadcrumbs');
+  if(!nav) return;
+  var crumbs = [];
+  var anythingOpen = !!openLotId || (currentView === 'intake' && !!openIntakeId);
+  crumbs.push({label: viewLabel(), onclick: anythingOpen ? 'crumbGoView()' : null});
+
+  if(currentView === 'intake' && openIntakeId){
+    var iLot = lots.find(function(l){ return l.id === openIntakeId; });
+    if(iLot){ crumbs.push({label: t().crumbPo.replace('{L}', iLot.po.lot), onclick: null}); }
+  }
+  if(openLotId){
+    var lot = lots.find(function(l){ return l.id === openLotId; });
+    if(lot){
+      crumbs.push({label: 'Grade ' + lot.letter + ': ' + lot.tag[lang], onclick: certOpen ? 'crumbGoLot()' : null});
+      if(certOpen){ crumbs.push({label: t().certTitle, onclick: null}); }
+    }
+  }
+
+  nav.innerHTML = crumbs.map(function(c, i){
+    var isLast = (i === crumbs.length - 1);
+    if(isLast || !c.onclick){
+      return '<span class="crumb current">' + c.label + '</span>';
+    }
+    return '<a href="#" class="crumb" onclick="event.preventDefault(); ' + c.onclick + '">' + c.label + '</a>';
+  }).join('<span class="crumb-sep">&rsaquo;</span>');
+}
+
+function renderStaticText(){
+  document.getElementById('t-h1').textContent = t().h1;
+  document.getElementById('t-sub').textContent = t().sub;
+  document.getElementById('t-note').textContent = t().note;
+  document.getElementById('btn-intake').textContent = t().intakeBtn;
+  document.getElementById('btn-importer').textContent = t().importerBtn;
+  document.getElementById('btn-lab').textContent = t().labBtn;
+}
+
+/* ---------- Intake & Validation view ---------- */
+function renderUploadBtn(){
+  var btn = document.getElementById('upload-btn');
+  var busy = (parsingId !== null || revealingId !== null);
+  if(importIndex >= lots.length){
+    btn.textContent = t().allImported;
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = t().uploadBtn;
+    btn.disabled = busy;
+  }
+}
+
+function renderIntakeList(){
+  renderUploadBtn();
+  var container = document.getElementById('intake-list');
+  if(importedIds.length === 0){
+    container.innerHTML = '<div class="empty-intake">' + t().emptyIntake + '</div>';
+    return;
+  }
+  container.innerHTML = '';
+  importedIds.forEach(function(id){
+    var lot = lots.find(function(l){ return l.id === id; });
+    var card = document.createElement('div');
+    card.className = 'intake-card' + (openIntakeId === lot.id ? ' open' : '');
+    var justTag = (id === importedIds[0] && (revealingId === id || parsingId === id)) ? '<span class="just-imported">' + t().justImported + '</span>' : '';
+    var headHtml =
+      '<div class="intake-head" onclick="toggleIntake(\'' + lot.id + '\')">' +
+        '<img class="intake-img" src="' + lot.img + '" alt="">' +
+        '<div><div class="intake-head-title">' + lot.title[lang] + justTag + '</div><div class="intake-head-sub">PO ' + lot.po.lot + ' &middot; ' + t().clickToExpand + '</div></div>' +
+        '<div class="intake-shield">' + shieldSVG(lot.color, lot.letter, 28) + '</div>' +
+        '<span class="intake-caret">&#9654;</span>' +
+      '</div>';
+    var bodyHtml = '<div class="intake-body">' + intakeBodyHTML(lot) + '</div>';
+    card.innerHTML = headHtml + bodyHtml;
+    container.appendChild(card);
+  });
+}
+
+function toggleIntake(id){
+  openIntakeId = (openIntakeId === id) ? null : id;
+  renderIntakeList();
+  renderBreadcrumbs();
+}
+
+function intakeBodyHTML(lot){
+  if(parsingId === lot.id){
+    return '<div class="parsing-row"><span class="spin"></span>' + t().parsing + '</div>';
+  }
+  var po = lot.po;
+  var poRows = [
+    [t().poProduct, po.product[lang]],
+    [t().poVolume, po.volume[lang]],
+    [t().poOrigin, po.origin[lang]],
+    [t().poLot, po.lot],
+    [t().poHs, po.hs],
+    [t().poSupplier, po.supplier]
+  ].map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+
+  var isRevealing = (revealingId === lot.id);
+  var reqRows = ['doc','sat','custody','lab'].map(function(k){
+    var e = lot.evidence[k];
+    if(isRevealing && checkedKeys.indexOf(k) === -1){
+      return '<div class="evidence-row"><span class="ev-dot dot pending"></span>' +
+        '<div class="ev-body"><h5>' + e.label[lang] + '</h5><p class="checking">' + t().checking + '</p></div></div>';
+    }
+    var cls = statusClass(e.status);
+    return '<div class="evidence-row"><span class="ev-dot dot ' + cls + '"></span>' +
+      '<div class="ev-body"><h5>' + e.label[lang] + '</h5><div class="ev-source">' + e.source[lang] + '</div><p>' + e.note[lang] + '</p></div>' +
+      '<span class="ev-status ' + cls + '">' + t().statusLabel[e.status] + '</span></div>';
+  }).join('');
+
+  var resultHtml;
+  if(isRevealing && checkedKeys.length < 4){
+    resultHtml = '';
+  } else {
+    var resultText = t().resultLine.replace('{L}', lot.letter).replace('{T}', lot.tag[lang]);
+    resultHtml = '<div class="section-h">' + t().resultSection + '</div>' +
+      '<div class="modal-example" style="display:flex;align-items:center;gap:12px;margin-bottom:0;">' +
+        '<div style="width:30px;flex-shrink:0;">' + shieldSVG(lot.color, lot.letter, 30) + '</div>' +
+        '<span>' + resultText + '</span>' +
+      '</div>' +
+      '<div class="flow-note"><a href="#" onclick="event.preventDefault(); openModal(\'' + lot.id + '\');">' + t().openInResults + '</a></div>';
+  }
+
+  return '<div class="section-h">' + t().poSection + '</div>' +
+    '<table class="po-table">' + poRows + '</table>' +
+    '<div class="section-h">' + t().reqSection + '</div>' +
+    reqRows +
+    resultHtml;
+}
+
+function uploadPO(){
+  if(importIndex >= lots.length) return;
+  var lot = lots[importIndex];
+  importIndex++;
+  importedIds.unshift(lot.id);
+  openIntakeId = lot.id;
+  parsingId = lot.id;
+  revealingId = null;
+  checkedKeys = [];
+  renderIntakeList();
+  renderBreadcrumbs();
+  setTimeout(function(){
+    parsingId = null;
+    revealingId = lot.id;
+    renderIntakeList();
+    revealNext(lot.id, ['doc','sat','custody','lab'], 0);
+  }, 900);
+}
+
+function revealNext(lotId, keys, idx){
+  if(idx >= keys.length){
+    revealingId = null;
+    renderIntakeList();
+    return;
+  }
+  checkedKeys.push(keys[idx]);
+  renderIntakeList();
+  setTimeout(function(){ revealNext(lotId, keys, idx + 1); }, 550);
+}
+
+/* ---------- Certified Results (importer) view ---------- */
+function renderGrid(){
+  var grid = document.getElementById('lot-grid');
+  grid.innerHTML = '';
+  lots.forEach(function(lot){
+    var card = document.createElement('div');
+    card.className = 'lot-card';
+    card.onclick = function(){ openModal(lot.id); };
+    var labBadge = lot.evidence.lab.status === 'verified' ? '<div class="lot-lab-badge" title="' + t().labVerified + '">&#129514;</div>' : '';
+    var dots = ['doc','sat','custody','lab'].map(function(k){
+      var st = lot.evidence[k].status;
+      return '<span class="dot ' + statusClass(st) + '" title="' + lot.evidence[k].label[lang] + ': ' + t().statusLabel[st] + '"></span>';
+    }).join('');
+    card.innerHTML =
+      '<div class="lot-img-wrap"><div class="lot-shield">' + shieldSVG(lot.color, lot.letter) + '</div>' + labBadge + '<img src="' + lot.img + '" alt=""></div>' +
+      '<div class="lot-body">' +
+        '<div class="lot-tag">Grade ' + lot.letter + ' &middot; ' + lot.tag[lang] + '</div>' +
+        '<div class="lot-title">' + lot.title[lang] + '</div>' +
+        '<div class="lot-status-row">' + dots + '</div>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+function evidenceRowsHTML(lot){
+  return ['doc','sat','custody','lab'].map(function(k){
+    var e = lot.evidence[k];
+    var cls = statusClass(e.status);
+    return '<div class="evidence-row"><span class="ev-dot dot ' + cls + '"></span>' +
+      '<div class="ev-body"><h5>' + e.label[lang] + '</h5><div class="ev-source">' + e.source[lang] + '</div><p>' + e.note[lang] + '</p></div>' +
+      '<span class="ev-status ' + cls + '">' + t().statusLabel[e.status] + '</span></div>';
+  }).join('');
+}
+
+function openModal(id){
+  openLotId = id;
+  certOpen = false;
+  renderModal();
+  document.getElementById('overlay').classList.add('open');
+  renderBreadcrumbs();
+}
+
+function renderModal(){
+  if(!openLotId) return;
+  var lot = lots.find(function(l){ return l.id === openLotId; });
+  var body = document.getElementById('modal-content');
+  var labBadgeHtml = lot.evidence.lab.status === 'verified'
+    ? '<div class="lab-strip"><strong>&#129514; ' + t().labVerified + '</strong>' + lot.evidence.lab.note[lang] + '</div>'
+    : (lot.evidence.lab.status === 'pending'
+      ? '<div class="lab-strip pend"><strong>&#8987; ' + t().labPending + '</strong>' + lot.evidence.lab.note[lang] + '</div>'
+      : '');
+
+  body.innerHTML =
+    '<div class="modal-top">' +
+      '<img class="modal-img" src="' + lot.img + '" alt="">' +
+      '<div class="modal-shield">' + shieldSVG(lot.color, lot.letter, 44) + '</div>' +
+      '<div><div class="modal-tag">Grade ' + lot.letter + ' &middot; ' + lot.tag[lang] + '</div><h3 class="modal-title">' + lot.title[lang] + '</h3></div>' +
+    '</div>' +
+    '<p class="modal-desc">' + lot.desc[lang] + '</p>' +
+    '<div class="modal-example"><strong>' + t().context + '</strong>' + lot.example[lang] + '</div>' +
+    evidenceRowsHTML(lot) +
+    labBadgeHtml +
+    '<button class="cert-btn" id="cert-toggle-btn" onclick="toggleCert()">' + t().viewCert + '</button>' +
+    '<div id="cert-area"></div>';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+  openLotId = null;
+  renderBreadcrumbs();
+}
+document.getElementById('overlay').addEventListener('click', function(e){ if(e.target.id === 'overlay') closeModal(); });
+
+var certOpen = false;
+function toggleCert(){
+  certOpen = !certOpen;
+  renderCert();
+  renderBreadcrumbs();
+  if(certOpen){
+    setTimeout(function(){
+      var area = document.getElementById('cert-area');
+      if(area) area.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 30);
+  }
+}
+function renderCert(){
+  var area = document.getElementById('cert-area');
+  var btn = document.getElementById('cert-toggle-btn');
+  if(!area) return;
+  if(!certOpen){ area.innerHTML = ''; if(btn) btn.textContent = t().viewCert; return; }
+  if(btn) btn.textContent = t().hideCert;
+  var lot = lots.find(function(l){ return l.id === openLotId; });
+  if(!lot) return;
+  var overallStatus = (lot.evidence.doc.status === 'flagged' || lot.evidence.sat.status === 'flagged' || lot.evidence.custody.status === 'flagged') ? t().discrepancies : t().noDiscrepancies;
+  var anchorHash = certHash(lot);
+  area.innerHTML =
+    '<div class="cert">' +
+      '<div class="cert-head"><h4>' + t().certTitle + '</h4><span class="cert-flag">' + overallStatus + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certProduct + '</span><span>' + lot.title[lang] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certLevel + '</span><span>Grade ' + lot.letter + ', ' + lot.tag[lang] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certDoc + '</span><span>' + t().statusLabel[lot.evidence.doc.status] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certSat + '</span><span>' + t().statusLabel[lot.evidence.sat.status] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certCustody + '</span><span>' + t().statusLabel[lot.evidence.custody.status] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certLab + '</span><span>' + (lot.evidence.lab.status === 'verified' ? t().certYes : t().certNo) + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certIssued + '</span><span>' + t().certIssuedNote + '</span></div>' +
+      '<div class="cert-row" style="border-bottom:none;"><span>' + t().certAnchor + '</span><span style="font-family:monospace;font-size:12px;" title="' + t().certAnchorNote + '">' + anchorHash + '</span></div>' +
+    '</div>';
+}
+
+function certHash(lot){
+  var src = lot.id + '|' + lot.letter + '|' + lot.po.lot + '|' + lot.evidence.doc.status + '|' + lot.evidence.sat.status + '|' + lot.evidence.custody.status + '|' + lot.evidence.lab.status;
+  var h = 0;
+  for(var i = 0; i < src.length; i++){ h = ((h << 5) - h + src.charCodeAt(i)) | 0; }
+  var hex = (h >>> 0).toString(16);
+  while(hex.length < 8){ hex = '0' + hex; }
+  return '0x' + hex + '...' + lot.po.lot.replace(/[^A-Za-z0-9]/g,'').slice(-6).toLowerCase();
+}
+
+/* ---------- Lab Partner view ---------- */
+function renderLabQueue(){
+  var container = document.getElementById('lab-queue');
+  var pending = lots.filter(function(l){ return l.evidence.lab.status === 'pending'; });
+  var verified = lots.filter(function(l){ return l.evidence.lab.status === 'verified'; });
+
+  var html = '';
+  if(pending.length === 0 && verified.length === 0){
+    html += '<div class="empty-queue">' + t().emptyQueue + '</div>';
+  }
+  pending.forEach(function(lot){
+    var subText = t().testRequested.replace('{L}', lot.letter);
+    html +=
+      '<div class="queue-card">' +
+        '<div class="queue-top">' +
+          '<img class="queue-img" src="' + lot.img + '" alt="">' +
+          '<div><div class="queue-title">' + lot.title[lang] + '</div><div class="queue-sub">' + subText + '</div></div>' +
+        '</div>' +
+        '<div class="lab-form">' +
+          '<div><label>' + t().method + '</label><select id="method-' + lot.id + '">' + t().methodOptions.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>' +
+          '<div><label>' + t().result + '</label><select id="result-' + lot.id + '">' + t().resultOptions.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>' +
+          '<div class="full"><label>' + t().custody + '</label><select id="custody-' + lot.id + '">' + t().custodyOptions.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>' +
+        '</div>' +
+        '<button class="submit-btn" onclick="submitLabResult(\'' + lot.id + '\')">' + t().submitBtn + '</button>' +
+      '</div>';
+  });
+  verified.forEach(function(lot){
+    html +=
+      '<div class="queue-card" style="border-left-color:var(--green);opacity:.75;">' +
+        '<div class="queue-top">' +
+          '<img class="queue-img" src="' + lot.img + '" alt="">' +
+          '<div><div class="queue-title">' + lot.title[lang] + '</div><div class="queue-sub">Grade ' + lot.letter + '</div></div>' +
+          '<span class="done-tag">' + t().submitted + '</span>' +
+        '</div>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function submitLabResult(id){
+  var lot = lots.find(function(l){ return l.id === id; });
+  var resultSelect = document.getElementById('result-' + id);
+  var custodySelect = document.getElementById('custody-' + id);
+  var methodSelect = document.getElementById('method-' + id);
+  var resultIdx = resultSelect.selectedIndex;
+  var custodyIdx = custodySelect.selectedIndex;
+  var methodIdx = methodSelect.selectedIndex;
+  var consistent = (resultIdx === 0);
+  var confirmed = (custodyIdx === 0);
+  var methodText = t().methodOptions[methodIdx];
+  if(consistent && confirmed){
+    lot.evidence.lab.status = 'verified';
+    lot.evidence.lab.note = {
+      en: methodText + " confirms result consistent with declared origin. Chain of custody confirmed.",
+      it: methodText + " conferma un risultato coerente con l'origine dichiarata. Catena di custodia confermata."
+    };
+  } else {
+    lot.evidence.lab.status = 'flagged';
+    lot.evidence.lab.note = {
+      en: methodText + " result: " + t().resultOptions[resultIdx].toLowerCase() + ". Custody: " + t().custodyOptions[custodyIdx].toLowerCase() + ".",
+      it: methodText + ", risultato: " + t().resultOptions[resultIdx].toLowerCase() + ". Custodia: " + t().custodyOptions[custodyIdx].toLowerCase() + "."
+    };
+  }
+  renderLabQueue();
+  renderGrid();
+  if(openIntakeId === id) renderIntakeList();
+}
+
+/* ---------- View / lang / theme switching ---------- */
+function setView(view){
+  currentView = view;
+  ['intake','importer','lab'].forEach(function(v){
+    document.getElementById('view-' + v).classList.toggle('active', v === view);
+    document.getElementById('btn-' + v).classList.toggle('active', v === view);
+  });
+  renderBreadcrumbs();
+}
+
+function setLang(newLang){
+  lang = newLang;
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+  document.documentElement.setAttribute('lang', lang);
+  renderStaticText();
+  renderIntakeList();
+  renderGrid();
+  renderLabQueue();
+  if(openLotId){ renderModal(); renderCert(); }
+  renderBreadcrumbs();
+}
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('theme-toggle').innerHTML = theme === 'dark' ? '&#9728;&#65039;' : '&#127769;';
+  try{ localStorage.setItem('vi-proto-theme', theme); }catch(e){}
+}
+function toggleTheme(){
+  var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+(function(){
+  var saved = 'light';
+  try{ saved = localStorage.getItem('vi-proto-theme') || 'light'; }catch(e){}
+  applyTheme(saved);
+})();
+
+renderStaticText();
+renderIntakeList();
+renderGrid();
+renderLabQueue();
+renderBreadcrumbs();
+</script>
