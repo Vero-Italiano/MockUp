@@ -33,6 +33,10 @@
   .toggle button.active, .lang-switch button.active{background:var(--green);color:#fff;}
   .theme-toggle{border:1px solid var(--line);background:var(--card-bg);border-radius:20px;padding:7px 12px;font-size:13px;cursor:pointer;box-shadow:var(--shadow);color:var(--ink);}
 
+  .ext-nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;margin:0 0 14px;color:var(--muted);}
+  .ext-nav a{color:var(--muted);text-decoration:none;font-weight:700;}
+  .ext-nav a:hover{color:var(--green);}
+  .ext-nav .ext-sep{color:var(--line);}
   .breadcrumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;margin:0 0 14px;color:var(--muted);}
   .breadcrumbs .crumb{color:var(--blue);text-decoration:none;cursor:pointer;}
   .breadcrumbs .crumb:hover{text-decoration:underline;}
@@ -156,6 +160,13 @@
 </style>
 
 <div class="wrap">
+  <nav class="ext-nav">
+    <a href="https://vero-italiano.github.io/Vero-/" id="ext-nav-home"></a>
+    <span class="ext-sep">&middot;</span>
+    <a href="https://vero-italiano.github.io/Spettro-di-Autenticita/" id="ext-nav-spectrum"></a>
+    <span class="ext-sep">&middot;</span>
+    <a href="https://vero-italiano.github.io/MVP-/" id="ext-nav-mvp"></a>
+  </nav>
   <header>
     <div class="h-left">
       <h1 id="t-h1"></h1>
@@ -264,7 +275,10 @@ var ui = {
     parsing: "Parsing purchase order, extracting product, volume, origin claim, lot and HS code...",
     checking: "Checking...",
     justImported: "Just imported",
-    crumbPo: "PO {L}"
+    crumbPo: "PO {L}",
+    navHome: "Main Menu",
+    navSpectrum: "Authenticity Spectrum",
+    navMvp: "MVP & Go-to-Market"
   },
   it: {
     h1: "Vero Italiano - Prototipo Importatore",
@@ -323,7 +337,10 @@ var ui = {
     parsing: "Analisi dell'ordine d'acquisto in corso, estrazione di prodotto, volume, dichiarazione di origine, lotto e codice HS...",
     checking: "Verifica in corso...",
     justImported: "Appena importato",
-    crumbPo: "Ordine {L}"
+    crumbPo: "Ordine {L}",
+    navHome: "Menu Principale",
+    navSpectrum: "Spettro di Autenticita",
+    navMvp: "MVP e Go-to-Market"
   }
 };
 
@@ -379,7 +396,7 @@ var lots = [
      custody:{status:'flagged', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Shipped bulk weight exceeds what the declared Italian-only sourcing would plausibly yield, consistent with the undisclosed foreign-sourced volume found in the documentation check.", it:"Il peso sfuso spedito supera quanto l'approvvigionamento dichiarato di sola origine italiana potrebbe plausibilmente produrre, coerente con il volume di origine estera non dichiarato riscontrato nella verifica documentale."}},
      lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
    }},
-  {id:'d', letter:'D', color:'#c9772f', img:'images/e-oliveoil-plain.png',
+  {id:'d', letter:'D', color:'#c9772f', img:'images/f-barilla.png',
    tag:{en:"Packaged Abroad: Italian Brand and Ingredients", it:"Confezionato all'Estero: Marchio e Ingredienti Italiani"},
    title:{en:"Olive oil, bottled abroad from Italian-sourced oil", it:"Olio d'oliva, imbottigliato all'estero da olio di origine italiana"},
    desc:{en:"A genuine Italian company manufactures locally in a foreign market to serve it efficiently, importing bulk Italian ingredients to preserve authenticity.",
@@ -396,7 +413,7 @@ var lots = [
      custody:{status:'confirmed', label:{en:"Chain-of-custody match", it:"Corrispondenza catena di custodia"}, source:{en:"Container seals (ISO 17712) and bill-of-lading weights", it:"Sigilli del container (ISO 17712) e pesi della polizza di carico"}, note:{en:"Container seal numbers and bulk shipment weight from the Italian source match the destination-market bottler's intake records within tolerance.", it:"I numeri di sigillo del container e il peso della spedizione sfusa dalla fonte italiana corrispondono ai registri di ricezione dell'imbottigliatore nel mercato di destinazione entro la tolleranza."}},
      lab:{status:'na', label:{en:"Physical lab verification", it:"Verifica fisica di laboratorio"}, source:{en:"Not requested", it:"Non richiesta"}, note:{en:"Not requested for this lot.", it:"Non richiesta per questo lotto."}}
    }},
-  {id:'e', letter:'E', color:'#c14f38', img:'images/f-barilla.png',
+  {id:'e', letter:'E', color:'#c14f38', img:'images/e-oliveoil-plain.png',
    tag:{en:"Brand Only", it:"Solo Marchio"},
    title:{en:"Pasta, U.S.-manufactured by an Italian brand", it:"Pasta, prodotta negli Stati Uniti da un marchio italiano"},
    desc:{en:"The company and heritage are genuinely Italian, but the product sold in a given market is manufactured locally end-to-end.",
@@ -544,6 +561,9 @@ function renderStaticText(){
   document.getElementById('btn-intake').textContent = t().intakeBtn;
   document.getElementById('btn-importer').textContent = t().importerBtn;
   document.getElementById('btn-lab').textContent = t().labBtn;
+  document.getElementById('ext-nav-home').textContent = t().navHome;
+  document.getElementById('ext-nav-spectrum').textContent = t().navSpectrum;
+  document.getElementById('ext-nav-mvp').textContent = t().navMvp;
 }
 
 /* ---------- Intake & Validation view ---------- */
