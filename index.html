@@ -718,4 +718,740 @@ var lots = [
       fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 bank trace + ISMEA Bari DOP EVOO price index", it:"Tracciamento PSD2 + listino ISMEA Olio DOP Bari"}, note:{en:"Direct milling and estate accounting verified; unit price (€11.40/L bulk equiv.) aligns with ISMEA Bari DOP index.", it:"Contabilita diretta tenuta/frantoio verificata; prezzo unitario coerente con listino ISMEA DOP Bari."}},
       sat:{status:'confirmed', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"30cm VHR tree-crown segmentation + Sentinel-2 fPAR", it:"Segmentazione chiome VHR 30cm + Sentinel-2 fPAR"}, note:{en:"1,420 Coratina olive trees mapped across 11 ha; 2025/26 'anno di carica' yield cap (3,850 L) comfortably covers lot.", it:"1.420 ulivi Coratina mappati su 11 ha; tetto resa annata di carica (3.850 L) copre ampiamente il lotto."}},
       custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Nitrogen-blanketed tank ID + ISO 17712 container seal", it:"ID cisterna sotto azoto + sigillo container ISO 17712"}, note:{en:"Tank-to-bottle mass balance and export seal verified without discrepancy.", it:"Bilancio di massa cisterna-bottiglia e sigillo export verificati senza discrepanze."}},
-      lab:{status:'verified', label:{en:"ISO 17025 /
+      lab:{status:'verified', label:{en:"ISO 17025 / IOC Lab Forensics", it:"Analisi Forensi ISO 17025 / COI"}, source:{en:"GC-FID/MS + HS-SPME-GC-MS + IOC Sensory Panel", it:"GC-FID/MS + HS-SPME-GC-MS + Panel Sensoriale COI"}, note:{en:"FAEEs = 9 mg/kg (limit ≤35), stigmastadienes <0.01 mg/kg, Coratina sesquiterpenes confirmed, median fruity = 5.8 (0 defects).", it:"FAEE = 9 mg/kg (limite ≤35), stigmastadieni <0,01 mg/kg, sesquiterpeni Coratina confermati, fruttato = 5,8 (0 difetti)."}}
+    }
+  },
+  {
+    id:'o2', category:'olive', code:'O3', color:'#b8862b', iconVar:'warn',
+    tag:{en:"Mediterranean Blend (Disclosed Bottling)", it:"Miscela Mediterranea (Imbottigliamento Dichiarato)"},
+    title:{en:"Classic Mediterranean Extra Virgin Olive Oil, Bottled in Tuscany (1L)", it:"Olio Extra Vergine d'Oliva Classico Mediterraneo, Imbottigliato in Toscana (1L)"},
+    desc:{en:"Legally compliant EVOO blended from disclosed Spanish, Greek, and Italian oils and bottled in Italy. Not eligible for '100% Italiano' status.",
+          it:"Olio EVO legalmente conforme miscelato da oli spagnoli, greci e italiani dichiarati in retroetichetta e imbottigliato in Italia. Non idoneo a '100% Italiano'."},
+    example:{en:"EU origin labeling rules allow 'Blend of EU Olive Oils' on the back label; Vero Italiano prevents front-label ambiguity by grading it O3 rather than O1/O2.",
+             it:"Le norme UE consentono 'Miscela di oli di oliva comunitari' in retroetichetta; Vero Italiano evita ambiguita classificandolo O3 anziche O1/O2."},
+    po:{product:{en:"Classic EVOO, 1L bottles (EU Blend)", it:"Olio EVO Classico, bottiglie 1L (Miscela UE)"},
+        volume:{en:"15,000 bottles (15,000 L)", it:"15.000 bottiglie (15.000 L)"},
+        origin:{en:"EU Mediterranean blend, bottled in Italy (disclosed)", it:"Miscela mediterranea UE, imbottigliata in Italia (dichiarato)"},
+        lot:"OB-2026-0445", hs:"1509.20", supplier:"Olearia Toscana SpA"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Registro Telematico dell'Olio (EU origin tank segregation)", it:"Registro Telematico dell'Olio SIAN (segregazione cisterne UE)"}, note:{en:"SIAN ledger properly segregates 65% Spanish/Greek EU bulk oil and 35% Italian oil matching back-label declaration.", it:"Il registro SIAN segrega correttamente 65% olio UE spagnolo/greco e 35% olio italiano come da retroetichetta."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"Intra-EU SdI XML purchase invoices", it:"Fatture elettroniche SdI acquisti intra-UE"}, note:{en:"Intra-EU XML invoices match declared Spanish and Greek mill suppliers.", it:"Le fatture XML intra-UE corrispondono ai frantoi fornitori spagnoli e greci dichiarati."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 SEPA settlements + ISMEA / Pool Red price index", it:"Bonifici SEPA PSD2 + listini ISMEA / Pool Red"}, note:{en:"Unit price (€6.85/L) aligns with EU blended EVOO wholesale benchmarks.", it:"Prezzo unitario (€6,85/L) coerente con i listini all'ingrosso delle miscele EVO UE."}},
+      sat:{status:'na', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"Not queried — multi-country EU blend", it:"Non interrogato — miscela multi-paese UE"}, note:{en:"Single-estate Italian satellite cap not applicable to disclosed multi-country EU blends.", it:"Tetto satellitare italiano non applicabile a miscele comunitarie multi-paese dichiarate."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Tanker weighbridge tickets + ISO 17712 export seal", it:"Bolle pesatura autocisterne + sigillo export ISO 17712"}, note:{en:"Inbound tanker weights and export container seals reconcile cleanly.", it:"Pesi autocisterne in ingresso e sigilli container in uscita riconciliati."}},
+      lab:{status:'na', label:{en:"ISO 17025 / IOC Lab Forensics", it:"Analisi Forensi ISO 17025 / COI"}, source:{en:"Routine COA chemical check (no single-origin lab badge)", it:"Controllo chimico COA di routine (nessun badge monorigine)"}, note:{en:"Routine acidity (0.34%) and peroxide (8.2 meq O2/kg) pass EVOO grade; O1/O2 origin badge not applicable.", it:"Acidita (0,34%) e perossidi (8,2 meq O2/kg) conformi a EVO; badge monorigine O1/O2 non applicabile."}}
+    }
+  },
+  {
+    id:'o3', category:'olive', code:'O0', color:'#b7312c', iconVar:'bad',
+    tag:{en:"Rejected — Adulterated / Soft-Deodorized", it:"Respinto — Adulterato / Deodorato"},
+    title:{en:"'100% Italiano' EVOO Flagged for Soft-Deodorized Lampante & Seed Oil", it:"Olio EVO '100% Italiano' Segnalato per Lampante Deodorato e Oli di Semi"},
+    desc:{en:"Elevated Fatty Acid Ethyl Esters (FAEEs) and abnormal ΔECN42 expose gently deodorized defective lampante oil diluted with high-oleic sunflower oil.",
+          it:"Esteri etilici degli acidi grassi (FAEE) elevati e ΔECN42 anomalo rivelano olio lampante difettoso deodorato e tagliato con olio di girasole alto-oleico."},
+    example:{en:"Soft deodorization removes rancid odors at low heat without forming stigmastadienes, but leaves high FAEEs (>35 mg/kg) from fermented olives.",
+             it:"La deodorazione blanda elimina gli odori di rancido a bassa temperatura senza formare stigmastadieni, ma lascia FAEE elevati (>35 mg/kg)."},
+    po:{product:{en:"100% Italian Extra Virgin Olive Oil, 750ml", it:"Olio Extra Vergine d'Oliva 100% Italiano, 750ml"},
+        volume:{en:"20,000 bottles (15,000 L)", it:"20.000 bottiglie (15.000 L)"},
+        origin:{en:"\"100% Italiano\" claimed on front label", it:"\"100% Italiano\" dichiarato in etichetta"},
+        lot:"OB-2026-0899", hs:"1509.20", supplier:"Mediterraneo Oil Packing Srl"},
+    evidence:{
+      reg:{status:'flagged', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Registro Telematico dell'Olio audit", it:"Audit Registro Telematico dell'Olio SIAN"}, note:{en:"Missing 6-hour olive delivery timestamps and unexplained tank volume gain (+4,200 L) in SIAN.", it:"Mancano i timestamp di consegna entro 6 ore e risulta un incremento ingiustificato di cisterna (+4.200 L) in SIAN."}},
+      sdi:{status:'flagged', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"FatturaPA XML line-item & shell-co-op detector", it:"Analisi righe FatturaPA XML e rilevamento cartiere"}, note:{en:"Inbound invoice from a shell broker ('cartiera') and separate purchase of refined high-oleic vegetable oil.", it:"Fattura passiva da intermediario fittizio ('cartiera') e acquisto separato di olio vegetale raffinato alto-oleico."}},
+      fin:{status:'flagged', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 Open Banking + ISMEA Italian EVOO floor", it:"PSD2 Open Banking + prezzo minimo ISMEA EVO Italiano"}, note:{en:"Selling at €5.40/L while ISMEA bulk Italian EVOO floor is €8.90/L; shell supplier bank account shows zero mill payments.", it:"Venduto a €5,40/L contro un minimo ISMEA di €8,90/L; conto bancario del fornitore privo di pagamenti a frantoi."}},
+      sat:{status:'flagged', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"VHR orchard yield check during regional drought", it:"Verifica resa oliveti VHR durante siccita regionale"}, note:{en:"Declared groves suffered severe off-year drought; physical capacity is <40% of sold volume.", it:"Gli oliveti dichiarati hanno subito siccita e annata di scarica; capacita fisica <40% del volume venduto."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Container seal check", it:"Verifica sigilli container"}, note:{en:"Container seals intact, but tank contents failed chemical authenticity.", it:"Sigilli container integri, ma il contenuto della cisterna non supera le analisi chimiche."}},
+      lab:{status:'verified', label:{en:"ISO 17025 / IOC Lab Forensics", it:"Analisi Forensi ISO 17025 / COI"}, source:{en:"GC-FID/MS FAEEs + HPLC ΔECN42 + IOC Sensory Panel", it:"GC-FID/MS FAEE + HPLC ΔECN42 + Panel Sensoriale COI"}, note:{en:"FAEEs = 118 mg/kg (limit ≤35), ΔECN42 = 0.48 (limit ≤0.20, proving ~12% sunflower oil), and IOC panel detected fusty/rancid defects.", it:"FAEE = 118 mg/kg (limite ≤35), ΔECN42 = 0,48 (limite ≤0,20, ~12% olio di girasole), panel COI rileva difetti di riscaldo/rancido."}}
+    }
+  },
+
+  /* --- CHEESES --- */
+  {
+    id:'c1', category:'cheese', code:'C1', color:'#1f6b3a', iconVar:'good',
+    tag:{en:"PDO & Pasture / Hay-Milk Verified", it:"DOP e Pascolo / Latte Fieno Verificati"},
+    title:{en:"Parmigiano Reggiano DOP Montagna, 24-Month Aged (Hay-Fed)", it:"Parmigiano Reggiano DOP Prodotto di Montagna, Stagionato 24 Mesi"},
+    desc:{en:"Single-dairy mountain Parmigiano Reggiano verified via dPCR species check, 87Sr/86Sr Apennine soil isotopes, CLA/phytanic pasture lipids, and satellite hay mowing.",
+          it:"Parmigiano Reggiano di montagna verificato tramite dPCR di specie, isotopi suolo appenninico 87Sr/86Sr, lipidi pascolo CLA/acido fitanico e sfalci fieno satellitari."},
+    example:{en:"Parmigiano Reggiano rules strictly prohibit fermented silage; fresh grass and hay leave distinct phytanic acid and conjugated linoleic acid (CLA) biomarkers.",
+             it:"Il disciplinare del Parmigiano Reggiano vieta severamente gli insilati; erba fresca e fieno lasciano biomarcatori specifici di acido fitanico e CLA."},
+    po:{product:{en:"Parmigiano Reggiano DOP Montagna, 24-month wheels", it:"Parmigiano Reggiano DOP Montagna, forme 24 mesi"},
+        volume:{en:"120 wheels (approx. 4,560 kg)", it:"120 forme (circa 4.560 kg)"},
+        origin:{en:"Apennine Mountain PDO zone, Emilia-Romagna", it:"Zona DOP Montagna Appenninica, Emilia-Romagna"},
+        lot:"PR-2026-0417", hs:"0406.90", supplier:"Caseificio Sociale Alta Val d'Enza"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"EU e-Ambrosia + OCQ PR stencil log + SIAN Latte Conservato", it:"EU e-Ambrosia + registro marchiatura OCQ PR + SIAN Latte Conservato"}, note:{en:"Casein plate serial numbers verified against consortium stamping register; zero milk powder/concentrate in SIAN.", it:"Matricole placche di caseina verificate sul registro di marchiatura; zero latte in polvere/concentrato in SIAN."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"Delegated FatturaPA XML dairy input scan", it:"Scansione delegata input caseificio FatturaPA XML"}, note:{en:"Zero inbound invoices for foreign curd, milk powder, or fermented silage.", it:"Nessuna fattura passiva per cagliate estere, latte in polvere o insilati fermentati."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 farm-gate milk payouts + ISMEA 24m PR index", it:"Bonifici latte alla stalla PSD2 + listino ISMEA PR 24 mesi"}, note:{en:"Verified milk collection payouts to 9 mountain farms; pricing aligns with ISMEA 24-month Montagna benchmark.", it:"Bonifici raccolta latte verificati verso 9 stalle di montagna; prezzo coerente con listino ISMEA Montagna 24 mesi."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (Sentinel-1 & Sentinel-2)", it:"Agronomia Satellitare (Sentinel-1 e Sentinel-2)"}, source:{en:"Sentinel-1 SAR mowing detection + Sentinel-2 forage biomass", it:"Rilevamento sfalci Sentinel-1 SAR + biomassa foraggera Sentinel-2"}, note:{en:"410 ha of local permanent meadows and alfalfa mapped with 3 hay cuts; forage dry-matter supports 100% of herd.", it:"410 ha di prati stabili e medica mappati con 3 sfalci di fieno; sostanza secca foraggera copre il 100% della mandria."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Reefer container ISO 17712 seal + wheel serial manifest", it:"Sigillo container frigo ISO 17712 + manifesto matricole forme"}, note:{en:"All 120 wheel serials and refrigerated container seals match export manifest.", it:"Tutte le 120 matricole delle forme e i sigilli del container frigo corrispondono al manifesto export."}},
+      lab:{status:'verified', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"dPCR Species + 87Sr/86Sr Bedrock + GC Phytanic Acid/CLA", it:"dPCR Specie + 87Sr/86Sr Suolo + GC Acido Fitanico/CLA"}, note:{en:"100% bovine milk (0% foreign species), Apennine 87Sr/86Sr match, and elevated phytanic acid/CLA confirming hay-fed diet.", it:"100% latte vaccino, corrispondenza geologica appenninica 87Sr/86Sr, acido fitanico e CLA elevati a conferma dieta a fieno."}}
+    }
+  },
+  {
+    id:'c2', category:'cheese', code:'C2', color:'#3d7a52', iconVar:'fresh',
+    tag:{en:"PDO Origin & Species Verified", it:"Origine DOP e Specie Verificate"},
+    title:{en:"Mozzarella di Bufala Campana DOP (250g Balls in Brine)", it:"Mozzarella di Bufala Campana DOP (Bocconcini 250g)"},
+    desc:{en:"100% Mediterranean water buffalo milk cheese verified by Digital PCR (0.1% cow-milk detection limit) and Campanian forage/water isotopes.",
+          it:"Formaggio 100% latte di bufala mediterranea verificato tramite Digital PCR (limite rilevamento latte vaccino 0,1%) e isotopi campani."},
+    example:{en:"Digital PCR (dPCR) counts absolute mitochondrial cytochrome b DNA copies, overcoming salt and calcium PCR inhibitors in brine-packed mozzarella.",
+             it:"La Digital PCR (dPCR) conta le copie assolute di DNA mitocondriale citocromo b, superando gli inibitori salini della mozzarella."},
+    po:{product:{en:"Mozzarella di Bufala Campana DOP, fresh chilled", it:"Mozzarella di Bufala Campana DOP, fresca refrigerata"},
+        volume:{en:"3,200 kg net drained weight", it:"3.200 kg peso netto sgocciolato"},
+        origin:{en:"Caserta / Sele Plain DOP zone, Campania", it:"Zona DOP Piana del Sele / Caserta, Campania"},
+        lot:"MB-2026-0508", hs:"0406.10", supplier:"Caseificio Bufalino del Sele"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Traceability Platform Bufalina + DQA OdC certificate", it:"Piattaforma Tracciabilita Bufalina SIAN + certificato OdC DQA"}, note:{en:"Daily buffalo milk intake and whey output reconciled on Italy's mandatory SIAN Buffalo Traceability Portal.", it:"Conferimenti giornalieri di latte di bufala e siero riconciliati sul Portale Tracciabilita Bufalina SIAN."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"FatturaPA XML dairy intake & packaging scan", it:"Scansione conferimenti e imballaggi FatturaPA XML"}, note:{en:"Zero cow's milk or frozen buffalo curd purchases detected in XML supplier invoices.", it:"Nessun acquisto di latte vaccino o cagliata bufalina congelata nelle fatture XML."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 buffalo farm payments + ISMEA Caserta milk price", it:"Pagamenti allevamenti bufalini PSD2 + listino ISMEA Caserta"}, note:{en:"Direct payments to registered buffalo farms verified at ISMEA PDO milk rates.", it:"Pagamenti diretti ad allevamenti bufalini registrati verificati ai prezzi ISMEA latte DOP."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (Sentinel-1 & Sentinel-2)", it:"Agronomia Satellitare (Sentinel-1 e Sentinel-2)"}, source:{en:"VHR buffalo paddock mapping + Sentinel-2 fodder crops", it:"Mappatura paddock bufalini VHR + colture foraggere Sentinel-2"}, note:{en:"Paddock footprint and local ryegrass/alfalfa acreage match registered buffalo herd size.", it:"Superficie paddock e ettari di loietto/medica coerenti con la mandria bufalina registrata."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Air-freight cold-chain seal + tamper-evident lot bands", it:"Sigillo catena del freddo aerea + fascette lotto antimanomissione"}, note:{en:"Cold-chain telemetry and consortium numbered labels verified intact.", it:"Telemetria del freddo e contrassegni numerati del consorzio verificati integri."}},
+      lab:{status:'pending', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"Digital PCR (dPCR) Bovine mtDNA + LC-MS/MS Casein", it:"Digital PCR (dPCR) mtDNA Bovino + Caseina LC-MS/MS"}, note:{en:"Routine dPCR surveillance sample submitted by importer; awaiting lab sign-off.", it:"Campione di sorveglianza dPCR inviato dall'importatore; in attesa di referto."}}
+    }
+  },
+  {
+    id:'c3', category:'cheese', code:'C0', color:'#b7312c', iconVar:'bad',
+    tag:{en:"Rejected — Species Dilution / Custody Breach", it:"Respinto — Diluizione Specie / Violazione Custodia"},
+    title:{en:"Pecorino Stagionato Flagged for 18% Cow's Milk & Missing Pallets", it:"Pecorino Stagionato Segnalato per 18% Latte Vaccino e Pallet Mancanti"},
+    desc:{en:"Digital PCR detected 18.4% undeclared cow's milk in a '100% Pure Sheep's Milk' lot, and 2 of 10 sealed pallets disappeared between curing plant and port.",
+          it:"La Digital PCR ha rilevato 18,4% di latte vaccino non dichiarato in un lotto '100% Pecora', e 2 pallet sigillati su 10 mancano all'arrivo al porto."},
+    example:{en:"Demonstrates dual failure: economic adulteration with cheaper cow's milk (caught by dPCR/LC-MS) plus physical cargo diversion (caught by ISO 17712 seal audit).",
+             it:"Dimostra una doppia violazione: adulterazione economica con latte vaccino (rilevata da dPCR/LC-MS) e deviazione fisica del carico."},
+    po:{product:{en:"Pecorino Stagionato, 100% Sheep's Milk Wheels", it:"Pecorino Stagionato, Forme 100% Latte di Pecora"},
+        volume:{en:"10 pallets (approx. 5,000 kg)", it:"10 pallet (circa 5.000 kg)"},
+        origin:{en:"Sardinia / Lazio sheep milk claimed", it:"Dichiarato latte di pecora Sardegna / Lazio"},
+        lot:"PC-2026-0774", hs:"0406.90", supplier:"Caseificio Pastorale Tirreno"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"Consortium & business registry check", it:"Verifica registro consorzio e imprese"}, note:{en:"Facility is a licensed processor, though non-PDO lot was declared.", it:"Stabilimento registrato, sebbene dichiarato come lotto non DOP."}},
+      sdi:{status:'flagged', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"FatturaPA XML milk procurement scan", it:"Scansione acquisti latte FatturaPA XML"}, note:{en:"Inbound XML invoices show 14,000 L of bulk cow's milk purchased from a mainland dairy during the production week.", it:"Fatture XML passive mostrano 14.000 L di latte vaccino acquistati da un caseificio continentale nella settimana di produzione."}},
+      fin:{status:'flagged', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 payment trace + ISMEA sheep milk index", it:"Tracciamento pagamenti PSD2 + listino ISMEA latte ovino"}, note:{en:"Payments to cow-milk cooperative confirmed via PSD2; unit price below pure sheep-milk cost floor.", it:"Pagamenti verso cooperativa latte vaccino confermati via PSD2; prezzo sotto il costo minimo del latte ovino."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (Sentinel-1 & Sentinel-2)", it:"Agronomia Satellitare (Sentinel-1 e Sentinel-2)"}, source:{en:"Sentinel-2 pasture biomass check", it:"Verifica biomassa pascoli Sentinel-2"}, note:{en:"Local pastures active, but output was stretched with outside cow's milk.", it:"Pascoli locali attivi, ma la resa e stata allungata con latte vaccino esterno."}},
+      custody:{status:'flagged', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"ISO 17712 container seals & port weighbridge", it:"Sigilli container ISO 17712 e pesa portuale"}, note:{en:"10 pallets logged leaving plant, only 8 pallets (4,010 kg) arrived at port; 1 container bolt seal replaced.", it:"10 pallet registrati in uscita dallo stabilimento, solo 8 pallet (4.010 kg) arrivati al porto; 1 sigillo sostituito."}},
+      lab:{status:'verified', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"Digital PCR (dPCR) + LC-MS/MS αs1-Casein", it:"Digital PCR (dPCR) + αs1-Caseina LC-MS/MS"}, note:{en:"dPCR quantified 18.4% Bos taurus (cow) DNA and LC-MS/MS confirmed bovine αs1-casein peptides.", it:"dPCR ha quantificato 18,4% di DNA Bos taurus (bovino) e LC-MS/MS ha confermato peptidi di αs1-caseina bovina."}}
+    }
+  },
+
+  /* --- WINE --- */
+  {
+    id:'w1', category:'wine', code:'W1', color:'#1f6b3a', iconVar:'good',
+    tag:{en:"Single-Vineyard DOCG Lab-Verified", it:"DOCG Singolo Vigneto Lab-Verified"},
+    title:{en:"Barolo DOCG Single-Cru 'Bricco delle Viole' (750ml)", it:"Barolo DOCG Vigna 'Bricco delle Viole' (750ml)"},
+    desc:{en:"100% Nebbiolo single-cru Barolo verified via VHR vine-row yield caps, SIAN MVV-E cellar logs, DOCG fascette serials, SNIF-NMR, and 87Sr/86Sr geology.",
+          it:"Barolo 100% Nebbiolo da singolo vigneto verificato tramite tetti resa filari VHR, registri cantina SIAN MVV-E, serie fascette DOCG, SNIF-NMR e geologia 87Sr/86Sr."},
+    example:{en:"Strontium isotope ratios (87Sr/86Sr) pass from vineyard bedrock into wine without biological fractionation, anchoring a single cru to its exact hillside.",
+             it:"I rapporti isotopici dello stronzio (87Sr/86Sr) passano dalla roccia madre al vino senza frazionamento biologico, ancorando la vigna alla collina."},
+    po:{product:{en:"Barolo DOCG Single-Vineyard, 12x750ml cases", it:"Barolo DOCG Vigna, casse 12x750ml"},
+        volume:{en:"600 cases (5,400 L / 7,200 bottles)", it:"600 casse (5.400 L / 7.200 bottiglie)"},
+        origin:{en:"Barolo DOCG commune, Piedmont (100% Nebbiolo)", it:"Comune di Barolo DOCG, Piemonte (100% Nebbiolo)"},
+        lot:"BR-2021-0094", hs:"2204.21", supplier:"Azienda Agricola Langhe Storiche"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Registro Vitivinicolo + Valoritalia DOCG fascette log", it:"Registro Vitivinicolo SIAN + registro fascette DOCG Valoritalia"}, note:{en:"Exact 7,200 State DOCG neck bands (fascette) and SIAN oak-aging tank transfers reconciled.", it:"Esatte 7.200 fascette di Stato DOCG e movimentazioni botti in SIAN riconciliate."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"Delegated FatturaPA XML winery audit", it:"Audit delegato FatturaPA XML cantina"}, note:{en:"Zero inbound bulk wine or rectified must (MCR) invoices; cork and heavy glass bottle invoices match 7,200-bottle run.", it:"Nessuna fattura passiva per vino sfuso o MCR; fatture di tappi e bottiglie coerenti con lotto da 7.200 bottiglie."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 estate operating trace + ISMEA Barolo bulk/bottle index", it:"Tracciamento operativo PSD2 + listino ISMEA Barolo"}, note:{en:"Estate vineyard labor and bottling settlements verified; pricing aligns with single-vineyard Barolo DOCG benchmarks.", it:"Spese di gestione vigneto e imbottigliamento verificate; prezzo coerente con Barolo DOCG da singolo vigneto."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"VHR vine-row count + Sentinel-2 LAI veraison curve", it:"Conteggio filari VHR + curva LAI invaiatura Sentinel-2"}, note:{en:"2.1 ha single-cru polygon mapped; estimated 11.4 t grape harvest (52 hL/ha) strictly within Barolo DOCG 56 hL/ha ceiling.", it:"Poligono vigna 2,1 ha mappato; raccolta stimata 11,4 t (52 hL/ha) rigorosamente entro il tetto Barolo DOCG di 56 hL/ha."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"e-AD excise movement + ISO 17712 temperature-controlled seal", it:"Documento accise e-AD + sigillo container termocontrollato ISO 17712"}, note:{en:"Excise e-AD dispatch and container seal verified intact.", it:"Spedizione accise e-AD e sigillo container verificati integri."}},
+      lab:{status:'verified', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"SNIF-NMR (D/H)I + IRMS + 87Sr/86Sr + HPLC Anthocyanins", it:"SNIF-NMR (D/H)I + IRMS + 87Sr/86Sr + Antociani HPLC"}, note:{en:"Matches EU Wine Databank Piedmont reference; Tortonian marl 87Sr/86Sr confirmed; peonidin-rich Nebbiolo anthocyanin profile.", it:"Conforme a Banca Dati Vini UE Piemonte; stronzio 87Sr/86Sr marne tortoniane confermato; profilo antocianico tipico Nebbiolo."}}
+    }
+  },
+  {
+    id:'w2', category:'wine', code:'W2', color:'#3d7a52', iconVar:'good',
+    tag:{en:"Appellation & Varietal Verified (DOC/DOCG)", it:"Denominazione e Varietale Verificati (DOC/DOCG)"},
+    title:{en:"Chianti Classico DOCG Annata, Estate Bottled (750ml)", it:"Chianti Classico DOCG Annata, Imbottigliato all'Origine (750ml)"},
+    desc:{en:"Verified Sangiovese-dominant Chianti Classico DOCG with full SIAN cellar lineage, satellite yield compliance, and clean FatturaPA XML records.",
+          it:"Chianti Classico DOCG a base Sangiovese verificato con tracciabilita completa SIAN, rispetto rese satellitari e FatturaPA XML regolari."},
+    example:{en:"Even without an optional on-demand lab test, convergence across SIAN MVV-E, Sentinel-2 yield caps, DOCG fascette, and PSD2 banking provides strong W2 clearance.",
+             it:"Anche senza test di laboratorio su richiesta, la convergenza tra SIAN MVV-E, tetti resa Sentinel-2, fascette DOCG e PSD2 garantisce livello W2."},
+    po:{product:{en:"Chianti Classico DOCG, 750ml bottles", it:"Chianti Classico DOCG, bottiglie 750ml"},
+        volume:{en:"2,500 cases (22,500 L / 30,000 bottles)", it:"2.500 casse (22.500 L / 30.000 bottiglie)"},
+        origin:{en:"Chianti Classico DOCG zone, Tuscany", it:"Zona Chianti Classico DOCG, Toscana"},
+        lot:"CC-2024-0318", hs:"2204.21", supplier:"Fattoria Castellina del Gallo"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Registro Vitivinicolo + Valoritalia suitability cert", it:"Registro Vitivinicolo SIAN + certificato idoneita Valoritalia"}, note:{en:"30,000 Gallo Nero DOCG fascette serials and SIAN fermentation tank records verified.", it:"30.000 fascette DOCG Gallo Nero e registri di vinificazione SIAN verificati."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"Delegated FatturaPA XML winery & packaging scan", it:"Scansione delegata cantina e imballaggi FatturaPA XML"}, note:{en:"No outside bulk wine or sugar purchases; bottling supplies match declared volume.", it:"Nessun acquisto di vino sfuso esterno o zuccheri; materiali di confezionamento coerenti."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 operating flows + ISMEA Siena DOCG price index", it:"Flussi operativi PSD2 + listino ISMEA Siena DOCG"}, note:{en:"Verified estate payroll and tax settlements; pricing consistent with ISMEA Chianti Classico index.", it:"Pagamenti operativi e fiscali verificati; prezzo coerente con listino ISMEA Chianti Classico."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"Sentinel-2 LAI vineyard curve across 6.5 ha estate", it:"Curva LAI vigneto Sentinel-2 su 6,5 ha aziendali"}, note:{en:"Estimated 44.2 t Sangiovese/Canaiolo harvest yields ~305 hL, covering the 225 hL export lot.", it:"Raccolta stimata 44,2 t Sangiovese/Canaiolo pari a ~305 hL, che copre ampiamente il lotto da 225 hL."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"e-AD excise document + container seal", it:"Documento accise e-AD + sigillo container"}, note:{en:"Shipment weight and container seal verified.", it:"Peso spedizione e sigillo container verificati."}},
+      lab:{status:'pending', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"SNIF-NMR / IRMS + HPLC Anthocyanins (optional upgrade)", it:"SNIF-NMR / IRMS + Antociani HPLC (upgrade opzionale)"}, note:{en:"Importer requested W1 lab upgrade test; sample currently in transit to ISO 17025 lab.", it:"L'importatore ha richiesto l'upgrade W1 di laboratorio; campione in transito verso laboratorio ISO 17025."}}
+    }
+  },
+  {
+    id:'w3', category:'wine', code:'W0', color:'#b7312c', iconVar:'bad',
+    tag:{en:"Rejected — Yield Overrun / Chaptalized", it:"Respinto — Sforamento Resa / Zuccherato"},
+    title:{en:"'100% Pinot Noir IGT' Flagged for Chaptalization & Syrah Blending", it:"'100% Pinot Nero IGT' Segnalato per Zuccheraggio e Taglio con Syrah"},
+    desc:{en:"Bottled volume exceeded vineyard satellite yield by 165%, FatturaPA XML revealed beet sucrose purchases, and HPLC detected acylated anthocyanins absent in pure Pinot Noir.",
+          it:"Volume imbottigliato superiore del 165% alla resa satellitare, FatturaPA XML ha rilevato acquisti di saccarosio da bietola e HPLC ha trovato antociani acilati assenti nel Pinot Nero puro."},
+    example:{en:"Pure Pinot Noir genetically lacks acylated anthocyanins (e.g. malvidin-3-p-coumaroylglucoside); their presence proves blending with Syrah, Merlot, or Cabernet.",
+             it:"Il Pinot Nero puro e geneticamente privo di antociani acilati; la loro presenza dimostra il taglio con Syrah, Merlot o Cabernet."},
+    po:{product:{en:"100% Pinot Noir Northern Italy IGT, 750ml", it:"Pinot Nero 100% IGT Nord Italia, 750ml"},
+        volume:{en:"10,000 cases (90,000 L / 120,000 bottles)", it:"10.000 casse (90.000 L / 120.000 bottiglie)"},
+        origin:{en:"\"100% Pinot Noir\" estate-bottled claimed", it:"Dichiarato \"100% Pinot Nero\" imbottigliato all'origine"},
+        lot:"PN-2025-1108", hs:"2204.21", supplier:"Cantine Alpine Trade Srl"},
+    evidence:{
+      reg:{status:'flagged', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Registro Vitivinicolo & SIAN Sugar Registry", it:"Registro Vitivinicolo SIAN e Registro SIAN Zuccheri"}, note:{en:"Unreconciled bulk wine intake from southern Italy via MVV-E and off-book sugar discrepancy.", it:"Ingresso non riconciliato di vino sfuso dal Sud Italia tramite MVV-E e discrepanza zuccheri."},
+      sdi:{status:'flagged', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"FatturaPA XML line-item & bottle-ratio miner", it:"Analisi righe FatturaPA XML e rapporto bottiglie"}, note:{en:"Inbound XML invoices show 8.5 tons of refined beet sugar and bulk southern red wine purchased prior to bottling.", it:"Fatture XML passive mostrano 8,5 tonnellate di zucchero di bietola e vino rosso sfuso meridionale acquistati prima dell'imbottigliamento."},
+      fin:{status:'flagged', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 wire trace + ISMEA Pinot Noir wholesale price", it:"Tracciamento bonifici PSD2 + listino ISMEA Pinot Nero"}, note:{en:"Wires routed to southern bulk wine brokers; outbound price 42% below northern Pinot Noir wholesale floor.", it:"Bonifici verso broker di vino sfuso meridionale; prezzo inferiore del 42% rispetto al minimo ISMEA Pinot Nero."}},
+      sat:{status:'flagged', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"Sentinel-2 LAI yield model on declared 4.8 ha vineyard", it:"Modello resa Sentinel-2 LAI sui 4,8 ha dichiarati"}, note:{en:"Declared 4.8 ha vineyard physically produces ~34,000 L max—less than 38% of the 90,000 L invoiced.", it:"I 4,8 ha dichiarati producono al massimo ~34.000 L—meno del 38% dei 90.000 L fatturati."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Container seal & weight check", it:"Verifica sigillo container e peso"}, note:{en:"Export container seal intact, but internal cellar mass-balance failed.", it:"Sigillo container export integro, ma bilancio di massa di cantina fallito."}},
+      lab:{status:'verified', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"SNIF-NMR (D/H)I + HPLC Anthocyanins", it:"SNIF-NMR (D/H)I + Antociani HPLC"}, note:{en:"SNIF-NMR (D/H)I = 93.1 ppm (proving beet-sugar chaptalization) and HPLC detected 19% acylated anthocyanins (Syrah/Merlot blend).", it:"SNIF-NMR (D/H)I = 93,1 ppm (zuccheraggio da bietola) e HPLC rileva 19% di antociani acilati (taglio Syrah/Merlot)."}}
+    }
+  }
+];
+
+var importedIds = [];
+var parsingId = null;
+var revealingId = null;
+var checkedKeys = [];
+var sixKeys = ['reg','sdi','fin','sat','custody','lab'];
+
+function t(){ return ui[lang]; }
+function statusClass(st){ return st === 'verified' ? 'confirmed' : st; }
+
+function shieldSVG(color, code, size){
+  size = size || 38;
+  var h = Math.round(size * 72 / 64);
+  var fSize = code.length > 2 ? 18 : 23;
+  return '<svg viewBox="0 0 64 72" width="' + size + '" height="' + h + '">' +
+    '<path d="M32 2 L60 12 L60 34 C60 54 48 66 32 70 C16 66 4 54 4 34 L4 12 Z" fill="' + color + '" stroke="#1f2a24" stroke-opacity="0.18" stroke-width="2"/>' +
+    '<text x="32" y="42" text-anchor="middle" font-size="' + fSize + '" font-weight="800" fill="#ffffff" font-family="-apple-system,Helvetica,Arial,sans-serif">' + code + '</text>' +
+    '</svg>';
+}
+
+function visibleLots(){
+  if(activeCategory === 'all') return lots;
+  return lots.filter(function(l){ return l.category === activeCategory; });
+}
+
+function viewLabel(){
+  return currentView === 'intake' ? t().intakeBtn : (currentView === 'lab' ? t().labBtn : t().importerBtn);
+}
+
+function crumbGoView(){
+  openIntakeId = null;
+  closeModal();
+  renderIntakeList();
+  renderBreadcrumbs();
+}
+function crumbGoLot(){
+  certOpen = false;
+  renderCert();
+  renderBreadcrumbs();
+}
+
+function renderBreadcrumbs(){
+  var nav = document.getElementById('breadcrumbs');
+  if(!nav) return;
+  var crumbs = [];
+  var anythingOpen = !!openLotId || (currentView === 'intake' && !!openIntakeId);
+  crumbs.push({label: viewLabel(), onclick: anythingOpen ? 'crumbGoView()' : null});
+
+  if(activeCategory !== 'all'){
+    crumbs.push({label: categories[activeCategory].label[lang], onclick: anythingOpen ? 'crumbGoView()' : null});
+  }
+
+  if(currentView === 'intake' && openIntakeId){
+    var iLot = lots.find(function(l){ return l.id === openIntakeId; });
+    if(iLot){ crumbs.push({label: t().crumbPo.replace('{L}', iLot.po.lot), onclick: null}); }
+  }
+  if(openLotId){
+    var lot = lots.find(function(l){ return l.id === openLotId; });
+    if(lot){
+      crumbs.push({label: lot.code + ': ' + lot.tag[lang], onclick: certOpen ? 'crumbGoLot()' : null});
+      if(certOpen){ crumbs.push({label: t().certTitle, onclick: null}); }
+    }
+  }
+
+  nav.innerHTML = crumbs.map(function(c, i){
+    var isLast = (i === crumbs.length - 1);
+    if(isLast || !c.onclick){
+      return '<span class="crumb current">' + c.label + '</span>';
+    }
+    return '<a href="#" class="crumb" onclick="event.preventDefault(); ' + c.onclick + '">' + c.label + '</a>';
+  }).join('<span class="crumb-sep">&rsaquo;</span>');
+}
+
+function renderStaticText(){
+  document.getElementById('t-h1').textContent = t().h1;
+  document.getElementById('t-sub').textContent = t().sub;
+  document.getElementById('t-note').textContent = t().note;
+  document.getElementById('btn-intake').textContent = t().intakeBtn;
+  document.getElementById('btn-importer').textContent = t().importerBtn;
+  document.getElementById('btn-lab').textContent = t().labBtn;
+  document.getElementById('ext-nav-home').textContent = t().navHome;
+  document.getElementById('ext-nav-spectrum').textContent = t().navSpectrum;
+  document.getElementById('ext-nav-mvp').textContent = t().navMvp;
+  document.getElementById('sources-toggle-btn').textContent = sourcesPanelOpen ? t().sourcesBtnHide : t().sourcesBtnShow;
+}
+
+function renderCategoryBar(){
+  var tabsEl = document.getElementById('cat-tabs');
+  var order = ['all','tomato','olive','cheese','wine'];
+  tabsEl.innerHTML = order.map(function(cid){
+    var count = cid === 'all' ? lots.length : lots.filter(function(l){ return l.category === cid; }).length;
+    var activeCls = (activeCategory === cid) ? ' active' : '';
+    return '<button class="cat-tab' + activeCls + '" onclick="setCategory(\'' + cid + '\')">' +
+      categories[cid].label[lang] + ' <span class="cat-count">' + count + '</span></button>';
+  }).join('');
+}
+
+function renderRatingLegend(){
+  var cat = categories[activeCategory];
+  var el = document.getElementById('rating-legend');
+  var tiersHtml = cat.tiers.map(function(tr){
+    return '<div class="rl-tier" style="border-left-color:' + tr.color + ';">' +
+      '<div class="rl-tier-top"><span class="rl-code" style="background:' + tr.color + ';">' + tr.code + '</span>' +
+      '<span class="rl-name">' + tr.name[lang] + '</span></div>' +
+      '<div class="rl-desc">' + tr.desc[lang] + '</div>' +
+    '</div>';
+  }).join('');
+
+  el.innerHTML =
+    '<div class="rl-head">' +
+      '<div class="rl-title">' + cat.scaleTitle[lang] + '</div>' +
+      '<div class="rl-sub">' + cat.scaleSub[lang] + '</div>' +
+    '</div>' +
+    '<div class="rl-grid">' + tiersHtml + '</div>';
+}
+
+function renderSourcesPanel(){
+  var panel = document.getElementById('sources-panel');
+  panel.classList.toggle('open', sourcesPanelOpen);
+  if(!sourcesPanelOpen) return;
+  var cardsHtml = infoSourcesDirectory.map(function(src){
+    return '<div class="sp-card">' +
+      '<strong>' + src.title[lang] + '</strong>' +
+      '<div class="sp-feeds">' + src.feeds[lang] + '</div>' +
+      '<p>' + src.desc[lang] + '</p>' +
+    '</div>';
+  }).join('');
+  panel.innerHTML =
+    '<div class="sp-head">' +
+      '<h3>' + t().sourcesPanelTitle + '</h3>' +
+      '<button class="sources-toggle-btn" onclick="toggleSourcesPanel()">' + t().sourcesPanelClose + '</button>' +
+    '</div>' +
+    '<div class="sp-grid">' + cardsHtml + '</div>';
+}
+
+function toggleSourcesPanel(){
+  sourcesPanelOpen = !sourcesPanelOpen;
+  renderStaticText();
+  renderSourcesPanel();
+}
+
+function setCategory(cid){
+  activeCategory = cid;
+  renderCategoryBar();
+  renderRatingLegend();
+  renderIntakeList();
+  renderGrid();
+  renderLabQueue();
+  renderBreadcrumbs();
+}
+
+/* ---------- Intake & Validation view ---------- */
+function renderPendingList(){
+  var sectionEl = document.getElementById('pending-section');
+  var listEl = document.getElementById('pending-list');
+  var busy = (parsingId !== null || revealingId !== null);
+  var pending = visibleLots().filter(function(l){ return importedIds.indexOf(l.id) === -1; });
+
+  if(pending.length === 0){
+    sectionEl.innerHTML = '';
+    listEl.innerHTML = '<div class="all-imported-note">' + t().allImported + '</div>';
+    return;
+  }
+
+  sectionEl.innerHTML = '<div class="pending-section-h">' + t().pendingSection + '</div>';
+  listEl.innerHTML = '';
+  pending.forEach(function(lot){
+    var row = document.createElement('div');
+    row.className = 'pending-row';
+    row.innerHTML =
+      '<div class="pending-thumb">' + productSVG(lot.category, lot.iconVar).replace('width="84" height="84"', 'width="30" height="30"') + '</div>' +
+      '<div><div class="pending-title">' + lot.title[lang] + '</div>' +
+      '<div class="pending-sub">' + categories[lot.category].label[lang] + ' &middot; PO ' + lot.po.lot + '</div></div>' +
+      '<button class="pending-upload-btn"' + (busy ? ' disabled' : '') + ' onclick="uploadPO(\'' + lot.id + '\')">&#8593; ' + t().uploadAction + '</button>';
+    listEl.appendChild(row);
+  });
+}
+
+function renderIntakeList(){
+  renderPendingList();
+  var container = document.getElementById('intake-list');
+  var visibleIds = importedIds.filter(function(id){
+    var l = lots.find(function(x){ return x.id === id; });
+    return l && (activeCategory === 'all' || l.category === activeCategory);
+  });
+
+  if(visibleIds.length === 0){
+    container.innerHTML = '<div class="empty-intake">' + t().emptyIntake + '</div>';
+    return;
+  }
+  container.innerHTML = '';
+  visibleIds.forEach(function(id){
+    var lot = lots.find(function(l){ return l.id === id; });
+    var card = document.createElement('div');
+    card.className = 'intake-card' + (openIntakeId === lot.id ? ' open' : '');
+    var justTag = (id === importedIds[0] && (revealingId === id || parsingId === id)) ? '<span class="just-imported">' + t().justImported + '</span>' : '';
+    var headHtml =
+      '<div class="intake-head" onclick="toggleIntake(\'' + lot.id + '\')">' +
+        '<div class="intake-thumb">' + productSVG(lot.category, lot.iconVar).replace('width="84" height="84"', 'width="34" height="34"') + '</div>' +
+        '<div><div class="intake-head-title">' + lot.title[lang] + justTag + '</div>' +
+        '<div class="intake-head-sub">' + categories[lot.category].label[lang] + ' &middot; PO ' + lot.po.lot + ' &middot; ' + t().clickToExpand + '</div></div>' +
+        '<div class="intake-shield">' + shieldSVG(lot.color, lot.code, 32) + '</div>' +
+        '<span class="intake-caret">&#9654;</span>' +
+      '</div>';
+    var bodyHtml = '<div class="intake-body">' + intakeBodyHTML(lot) + '</div>';
+    card.innerHTML = headHtml + bodyHtml;
+    container.appendChild(card);
+  });
+}
+
+function toggleIntake(id){
+  openIntakeId = (openIntakeId === id) ? null : id;
+  renderIntakeList();
+  renderBreadcrumbs();
+}
+
+function intakeBodyHTML(lot){
+  if(parsingId === lot.id){
+    return '<div class="parsing-row"><span class="spin"></span>' + t().parsing + '</div>';
+  }
+  var po = lot.po;
+  var poRows = [
+    [t().poProduct, po.product[lang]],
+    [t().poVolume, po.volume[lang]],
+    [t().poOrigin, po.origin[lang]],
+    [t().poLot, po.lot],
+    [t().poHs, po.hs],
+    [t().poSupplier, po.supplier]
+  ].map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+
+  var isRevealing = (revealingId === lot.id);
+  var reqRows = sixKeys.map(function(k){
+    var e = lot.evidence[k];
+    if(isRevealing && checkedKeys.indexOf(k) === -1){
+      return '<div class="evidence-row"><span class="ev-dot dot pending"></span>' +
+        '<div class="ev-body"><h5>' + e.label[lang] + '</h5><p class="checking">' + t().checking + '</p></div></div>';
+    }
+    var cls = statusClass(e.status);
+    return '<div class="evidence-row"><span class="ev-dot dot ' + cls + '"></span>' +
+      '<div class="ev-body"><h5>' + e.label[lang] + '</h5><div class="ev-source">' + e.source[lang] + '</div><p>' + e.note[lang] + '</p></div>' +
+      '<span class="ev-status ' + cls + '">' + t().statusLabel[e.status] + '</span></div>';
+  }).join('');
+
+  var resultHtml = '';
+  if(!(isRevealing && checkedKeys.length < sixKeys.length)){
+    var isRejected = lot.code.endsWith('0');
+    var resultText = (isRejected ? t().resultLineRejected : t().resultLine)
+      .replace('{R}', lot.code)
+      .replace('{T}', lot.tag[lang]);
+    resultHtml = '<div class="section-h">' + t().resultSection + '</div>' +
+      '<div class="modal-example" style="display:flex;align-items:center;gap:12px;margin-bottom:0;">' +
+        '<div style="flex-shrink:0;">' + shieldSVG(lot.color, lot.code, 34) + '</div>' +
+        '<span>' + resultText + '</span>' +
+      '</div>' +
+      '<div class="flow-note"><a href="#" onclick="event.preventDefault(); openModal(\'' + lot.id + '\');">' + t().openInResults + '</a></div>';
+  }
+
+  return '<div class="section-h">' + t().poSection + '</div>' +
+    '<table class="po-table">' + poRows + '</table>' +
+    '<div class="section-h">' + t().reqSection + '</div>' +
+    reqRows +
+    resultHtml;
+}
+
+function uploadPO(id){
+  if(importedIds.indexOf(id) !== -1) return;
+  var lot = lots.find(function(l){ return l.id === id; });
+  if(!lot) return;
+  importedIds.unshift(lot.id);
+  openIntakeId = lot.id;
+  parsingId = lot.id;
+  revealingId = null;
+  checkedKeys = [];
+  renderIntakeList();
+  renderBreadcrumbs();
+  setTimeout(function(){
+    parsingId = null;
+    revealingId = lot.id;
+    renderIntakeList();
+    revealNext(lot.id, sixKeys, 0);
+  }, 750);
+}
+
+function revealNext(lotId, keys, idx){
+  if(idx >= keys.length){
+    revealingId = null;
+    renderIntakeList();
+    return;
+  }
+  checkedKeys.push(keys[idx]);
+  renderIntakeList();
+  setTimeout(function(){ revealNext(lotId, keys, idx + 1); }, 380);
+}
+
+/* ---------- Certified Results (importer) view ---------- */
+function renderGrid(){
+  var grid = document.getElementById('lot-grid');
+  grid.innerHTML = '';
+  visibleLots().forEach(function(lot){
+    var card = document.createElement('div');
+    card.className = 'lot-card';
+    card.onclick = function(){ openModal(lot.id); };
+    var labBadge = lot.evidence.lab.status === 'verified' ? '<div class="lot-lab-badge" title="' + t().labVerified + '">&#129514;</div>' : '';
+    var dots = sixKeys.map(function(k){
+      var st = lot.evidence[k].status;
+      return '<span class="dot ' + statusClass(st) + '" title="' + lot.evidence[k].label[lang] + ': ' + t().statusLabel[st] + '"></span>';
+    }).join('');
+    card.innerHTML =
+      '<div class="lot-img-wrap">' +
+        '<div class="lot-shield">' + shieldSVG(lot.color, lot.code, 36) + '</div>' +
+        labBadge +
+        productSVG(lot.category, lot.iconVar) +
+        '<span class="lot-cat-pill">' + categories[lot.category].label[lang] + '</span>' +
+      '</div>' +
+      '<div class="lot-body">' +
+        '<div class="lot-tag">' + lot.code + ' &middot; ' + lot.tag[lang] + '</div>' +
+        '<div class="lot-title">' + lot.title[lang] + '</div>' +
+        '<div class="lot-status-row">' + dots + '<span class="lot-status-label">' + t().sixDotsHint + '</span></div>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+function evidenceRowsHTML(lot){
+  return sixKeys.map(function(k){
+    var e = lot.evidence[k];
+    var cls = statusClass(e.status);
+    return '<div class="evidence-row"><span class="ev-dot dot ' + cls + '"></span>' +
+      '<div class="ev-body"><h5>' + e.label[lang] + '</h5><div class="ev-source">' + e.source[lang] + '</div><p>' + e.note[lang] + '</p></div>' +
+      '<span class="ev-status ' + cls + '">' + t().statusLabel[e.status] + '</span></div>';
+  }).join('');
+}
+
+function openModal(id){
+  openLotId = id;
+  certOpen = false;
+  renderModal();
+  document.getElementById('overlay').classList.add('open');
+  renderBreadcrumbs();
+}
+
+function renderModal(){
+  if(!openLotId) return;
+  var lot = lots.find(function(l){ return l.id === openLotId; });
+  var body = document.getElementById('modal-content');
+  var labBadgeHtml = lot.evidence.lab.status === 'verified'
+    ? '<div class="lab-strip"><strong>&#129514; ' + t().labVerified + '</strong>' + lot.evidence.lab.note[lang] + '</div>'
+    : (lot.evidence.lab.status === 'pending'
+      ? '<div class="lab-strip pend"><strong>&#8987; ' + t().labPending + '</strong>' + lot.evidence.lab.note[lang] + '</div>'
+      : '');
+
+  body.innerHTML =
+    '<div class="modal-top">' +
+      '<div class="modal-thumb">' + productSVG(lot.category, lot.iconVar).replace('width="84" height="84"', 'width="48" height="48"') + '</div>' +
+      '<div class="modal-shield">' + shieldSVG(lot.color, lot.code, 44) + '</div>' +
+      '<div><div class="modal-tag">' + categories[lot.category].label[lang] + ' &middot; ' + lot.code + ' &middot; ' + lot.tag[lang] + '</div>' +
+      '<h3 class="modal-title">' + lot.title[lang] + '</h3></div>' +
+    '</div>' +
+    '<p class="modal-desc">' + lot.desc[lang] + '</p>' +
+    '<div class="modal-example"><strong>' + t().context + '</strong>' + lot.example[lang] + '</div>' +
+    '<div class="section-h">' + t().reqSection + '</div>' +
+    evidenceRowsHTML(lot) +
+    labBadgeHtml +
+    '<button class="cert-btn" id="cert-toggle-btn" onclick="toggleCert()">' + t().viewCert + '</button>' +
+    '<div id="cert-area"></div>';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+  openLotId = null;
+  renderBreadcrumbs();
+}
+document.getElementById('overlay').addEventListener('click', function(e){ if(e.target.id === 'overlay') closeModal(); });
+
+function toggleCert(){
+  certOpen = !certOpen;
+  renderCert();
+  renderBreadcrumbs();
+  if(certOpen){
+    setTimeout(function(){
+      var area = document.getElementById('cert-area');
+      if(area) area.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 30);
+  }
+}
+function renderCert(){
+  var area = document.getElementById('cert-area');
+  var btn = document.getElementById('cert-toggle-btn');
+  if(!area) return;
+  if(!certOpen){ area.innerHTML = ''; if(btn) btn.textContent = t().viewCert; return; }
+  if(btn) btn.textContent = t().hideCert;
+  var lot = lots.find(function(l){ return l.id === openLotId; });
+  if(!lot) return;
+  var hasFlag = sixKeys.some(function(k){ return lot.evidence[k].status === 'flagged'; });
+  var overallStatus = hasFlag ? t().discrepancies : t().noDiscrepancies;
+  var borderCol = hasFlag ? 'var(--red-it)' : 'var(--green)';
+  var anchorHash = certHash(lot);
+
+  var sourceRows = sixKeys.map(function(k){
+    var ev = lot.evidence[k];
+    return '<div class="cert-row"><span>' + ev.label[lang] + '</span><span>' + t().statusLabel[ev.status] + '</span></div>';
+  }).join('');
+
+  area.innerHTML =
+    '<div class="cert" style="border-color:' + borderCol + ';">' +
+      '<div class="cert-head"><h4>' + t().certTitle + '</h4><span class="cert-flag" style="color:' + borderCol + ';">' + overallStatus + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certCategory + '</span><span>' + categories[lot.category].label[lang] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certProduct + '</span><span>' + lot.title[lang] + '</span></div>' +
+      '<div class="cert-row"><span>' + t().poLot + '</span><span>' + lot.po.lot + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certLevel + '</span><span><strong>' + lot.code + ' — ' + lot.tag[lang] + '</strong></span></div>' +
+      sourceRows +
+      '<div class="cert-row"><span>' + t().certLab + '</span><span>' + (lot.evidence.lab.status === 'verified' ? t().certYes : t().certNo) + '</span></div>' +
+      '<div class="cert-row"><span>' + t().certIssued + '</span><span>' + t().certIssuedNote + '</span></div>' +
+      '<div class="cert-row" style="border-bottom:none;"><span>' + t().certAnchor + '</span><span style="font-family:monospace;font-size:12px;" title="' + t().certAnchorNote + '">' + anchorHash + '</span></div>' +
+    '</div>';
+}
+
+function certHash(lot){
+  var src = lot.id + '|' + lot.code + '|' + lot.po.lot + '|' + sixKeys.map(function(k){ return lot.evidence[k].status; }).join('|');
+  var h = 0;
+  for(var i = 0; i < src.length; i++){ h = ((h << 5) - h + src.charCodeAt(i)) | 0; }
+  var hex = (h >>> 0).toString(16);
+  while(hex.length < 8){ hex = '0' + hex; }
+  return '0x' + hex + '...' + lot.po.lot.replace(/[^A-Za-z0-9]/g,'').slice(-6).toLowerCase();
+}
+
+/* ---------- Lab Partner view (Sector-Specific Assays) ---------- */
+function renderLabQueue(){
+  var container = document.getElementById('lab-queue');
+  var scoped = visibleLots();
+  var pending = scoped.filter(function(l){ return l.evidence.lab.status === 'pending'; });
+  var verified = scoped.filter(function(l){ return l.evidence.lab.status === 'verified'; });
+
+  var html = '';
+  if(pending.length === 0 && verified.length === 0){
+    html += '<div class="empty-queue">' + t().emptyQueue + '</div>';
+  }
+  pending.forEach(function(lot){
+    var subText = t().testRequested
+      .replace('{CAT}', categories[lot.category].label[lang])
+      .replace('{R}', lot.code);
+    var methods = categories[lot.category].labMethods[lang];
+    html +=
+      '<div class="queue-card">' +
+        '<div class="queue-top">' +
+          '<div class="queue-thumb">' + productSVG(lot.category, lot.iconVar).replace('width="84" height="84"', 'width="36" height="36"') + '</div>' +
+          '<div><div class="queue-title">' + lot.title[lang] + '</div><div class="queue-sub">' + subText + '</div></div>' +
+        '</div>' +
+        '<div class="lab-form">' +
+          '<div><label>' + t().method + '</label><select id="method-' + lot.id + '">' + methods.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>' +
+          '<div><label>' + t().result + '</label><select id="result-' + lot.id + '">' + t().resultOptions.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>' +
+          '<div class="full"><label>' + t().custody + '</label><select id="custody-' + lot.id + '">' + t().custodyOptions.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>' +
+        '</div>' +
+        '<button class="submit-btn" onclick="submitLabResult(\'' + lot.id + '\')">' + t().submitBtn + '</button>' +
+      '</div>';
+  });
+  verified.forEach(function(lot){
+    html +=
+      '<div class="queue-card" style="border-left-color:var(--green);opacity:.82;">' +
+        '<div class="queue-top">' +
+          '<div class="queue-thumb">' + productSVG(lot.category, lot.iconVar).replace('width="84" height="84"', 'width="36" height="36"') + '</div>' +
+          '<div><div class="queue-title">' + lot.title[lang] + '</div>' +
+          '<div class="queue-sub">' + categories[lot.category].label[lang] + ' &middot; ' + lot.code + ' &middot; ' + lot.tag[lang] + '</div></div>' +
+          '<span class="done-tag">' + t().submitted + '</span>' +
+        '</div>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function submitLabResult(id){
+  var lot = lots.find(function(l){ return l.id === id; });
+  var resultSelect = document.getElementById('result-' + id);
+  var custodySelect = document.getElementById('custody-' + id);
+  var methodSelect = document.getElementById('method-' + id);
+  var resultIdx = resultSelect.selectedIndex;
+  var custodyIdx = custodySelect.selectedIndex;
+  var methodIdx = methodSelect.selectedIndex;
+  var consistent = (resultIdx === 0);
+  var confirmed = (custodyIdx === 0);
+  var methodText = categories[lot.category].labMethods[lang][methodIdx];
+
+  if(consistent && confirmed){
+    lot.evidence.lab.status = 'verified';
+    lot.evidence.lab.note = {
+      en: methodText + " confirms result consistent with declared origin and composition. ISO 17025 chain of custody verified.",
+      it: methodText + " conferma esito coerente con origine e composizione dichiarate. Catena di custodia ISO 17025 verificata."
+    };
+    /* Upgrade eligible W2 wine lot to W1 Single-Vineyard / Lab-Verified upon clean lab pass */
+    if(lot.id === 'w2'){
+      lot.code = 'W1';
+      lot.color = '#1f6b3a';
+      lot.tag = {en:"Appellation & Varietal Lab-Verified", it:"Denominazione e Varietale Lab-Verified"};
+    }
+  } else {
+    lot.evidence.lab.status = 'flagged';
+    lot.code = lot.category.charAt(0).toUpperCase() + '0';
+    lot.color = '#b7312c';
+    lot.tag = categories[lot.category].tiers[3].name;
+    lot.evidence.lab.note = {
+      en: methodText + " flagged discrepancy: " + t().resultOptions[resultIdx].toLowerCase() + ". Custody: " + t().custodyOptions[custodyIdx].toLowerCase() + ".",
+      it: methodText + " ha rilevato difformita: " + t().resultOptions[resultIdx].toLowerCase() + ". Custodia: " + t().custodyOptions[custodyIdx].toLowerCase() + "."
+    };
+  }
+  renderLabQueue();
+  renderGrid();
+  if(openIntakeId === id) renderIntakeList();
+}
+
+/* ---------- View / lang / theme switching ---------- */
+function setView(view){
+  currentView = view;
+  ['intake','importer','lab'].forEach(function(v){
+    document.getElementById('view-' + v).classList.toggle('active', v === view);
+    document.getElementById('btn-' + v).classList.toggle('active', v === view);
+  });
+  renderBreadcrumbs();
+}
+
+function setLang(newLang){
+  lang = newLang;
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+  document.documentElement.setAttribute('lang', lang);
+  renderStaticText();
+  renderCategoryBar();
+  renderSourcesPanel();
+  renderRatingLegend();
+  renderIntakeList();
+  renderGrid();
+  renderLabQueue();
+  if(openLotId){ renderModal(); renderCert(); }
+  renderBreadcrumbs();
+}
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('theme-toggle').innerHTML = theme === 'dark' ? '&#9728;&#65039;' : '&#127769;';
+  try{ localStorage.setItem('vi-proto-theme', theme); }catch(e){}
+}
+function toggleTheme(){
+  var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+(function(){
+  var saved = 'light';
+  try{ saved = localStorage.getItem('vi-proto-theme') || 'light'; }catch(e){}
+  applyTheme(saved);
+})();
+
+renderStaticText();
+renderCategoryBar();
+renderSourcesPanel();
+renderRatingLegend();
+renderIntakeList();
+renderGrid();
+renderLabQueue();
+renderBreadcrumbs();
+</script>
+</body>
+</html>
