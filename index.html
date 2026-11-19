@@ -586,4 +586,136 @@ var categories = {
     ],
     labMethods: {
       en: ["SNIF-NMR (D/H)I + IRMS (δ13C, δ18O) vs. EU Wine Databank", "MC-ICP-MS 87Sr/86Sr Vineyard Geology + HPLC Anthocyanins / Shikimic Acid", "14C Bomb-Pulse & 210Pb Glass Dating (Collector Vintage Authentication)"],
-      it: ["
+      it: ["SNIF-NMR (D/H)I + IRMS (δ13C, δ18O) vs. Banca Dati Vini UE", "Geologia Vigneto MC-ICP-MS 87Sr/86Sr + Antociani / Acido Shikimico HPLC", "Datazione 14C Bomb-Pulse e 210Pb sul Vetro (Autenticazione Annate Storiche)"]
+    }
+  }
+};
+
+/* Crisp custom vector illustrations per sector so no external images ever break */
+function productSVG(cat, variant){
+  if(cat === 'tomato'){
+    var labelCol = variant === 'bad' ? '#b7312c' : (variant === 'warn' ? '#b8862b' : '#2f5d3a');
+    return '<svg viewBox="0 0 96 96" width="84" height="84">' +
+      '<rect x="24" y="16" width="48" height="64" rx="6" fill="#e6e2d8" stroke="#9aa39e" stroke-width="2"/>' +
+      '<ellipse cx="48" cy="16" rx="24" ry="4" fill="#cfd5d1" stroke="#9aa39e" stroke-width="1.5"/>' +
+      '<rect x="25" y="30" width="46" height="36" fill="' + labelCol + '"/>' +
+      '<circle cx="48" cy="48" r="11" fill="#d93829"/>' +
+      '<path d="M44 38 Q48 33 52 38" stroke="#2f5d3a" stroke-width="2.5" fill="none"/>' +
+      '</svg>';
+  }
+  if(cat === 'olive'){
+    var glassCol = variant === 'bad' ? '#8c6d3f' : '#3a5f32';
+    return '<svg viewBox="0 0 96 96" width="84" height="84">' +
+      '<rect x="42" y="10" width="12" height="16" rx="2" fill="#b8862b"/>' +
+      '<path d="M42 26 L32 38 L32 82 C32 85 35 86 48 86 C61 86 64 85 64 82 L64 38 L54 26 Z" fill="' + glassCol + '"/>' +
+      '<rect x="35" y="46" width="26" height="24" rx="2" fill="#faf7f2"/>' +
+      '<circle cx="48" cy="58" r="6" fill="#7c9a3e"/>' +
+      '</svg>';
+  }
+  if(cat === 'cheese'){
+    var rindCol = variant === 'fresh' ? '#f5f2eb' : '#d8a648';
+    var pasteCol = variant === 'fresh' ? '#ffffff' : '#f7e4a8';
+    return '<svg viewBox="0 0 96 96" width="84" height="84">' +
+      '<ellipse cx="48" cy="36" rx="34" ry="14" fill="' + pasteCol + '" stroke="' + rindCol + '" stroke-width="3"/>' +
+      '<path d="M14 36 L14 62 C14 70 29 76 48 76 C67 76 82 70 82 62 L82 36 C82 44 67 50 48 50 C29 50 14 44 14 36 Z" fill="' + rindCol + '"/>' +
+      '<rect x="32" y="54" width="32" height="12" rx="3" fill="#faf7f2" opacity="0.85"/>' +
+      '</svg>';
+  }
+  /* wine */
+  var capCol = variant === 'bad' ? '#b7312c' : '#7a1f24';
+  return '<svg viewBox="0 0 96 96" width="84" height="84">' +
+    '<rect x="43" y="8" width="10" height="22" rx="2" fill="' + capCol + '"/>' +
+    '<path d="M43 30 C35 34 34 42 34 48 L34 84 C34 86 38 87 48 87 C58 87 62 86 62 84 L62 48 C62 42 61 34 53 30 Z" fill="#233127"/>' +
+    '<rect x="36" y="50" width="24" height="24" rx="2" fill="#faf7f2"/>' +
+    '<line x1="40" y1="58" x2="56" y2="58" stroke="#7a1f24" stroke-width="2"/>' +
+    '<line x1="40" y1="64" x2="52" y2="64" stroke="#6b7570" stroke-width="1.5"/>' +
+    '</svg>';
+}
+
+/* 12 Sector-Specific Lots (3 per category) */
+var lots = [
+  /* --- TOMATOES & SAUCE --- */
+  {
+    id:'t1', category:'tomato', code:'T1', color:'#1f6b3a', iconVar:'good',
+    tag:{en:"DOP Cultivar & Terroir Verified", it:"Cultivar DOP e Terroir Verificati"},
+    title:{en:"San Marzano dell'Agro Sarnese-Nocerino DOP Pelati (2,500g)", it:"Pomodoro San Marzano dell'Agro Sarnese-Nocerino DOP Pelati (2.500g)"},
+    desc:{en:"Registered San Marzano 2 cultivar grown in Vesuvian volcanic soil, fresh-packed with zero added citric acid, sugar, or water dilution.",
+          it:"Cultivar registrata San Marzano 2 coltivata nei suoli vulcanici vesuviani, lavorata dal fresco senza acido citrico, zuccheri o diluizione."},
+    example:{en:"DOP rules restrict cultivation to 41 municipalities in Campania and mandate registered San Marzano 2 / KIROS ecotypes with an elongated axial ratio ≥ 2.2.",
+             it:"Il disciplinare DOP limita la coltivazione a 41 comuni campani e impone ecotipi registrati San Marzano 2 / KIROS con rapporto assiale ≥ 2,2."},
+    po:{product:{en:"Pomodoro San Marzano DOP, whole peeled in juice", it:"Pomodoro San Marzano DOP, pelati interi nel loro succo"},
+        volume:{en:"12,000 tins (30,000 kg net)", it:"12.000 barattoli (30.000 kg netti)"},
+        origin:{en:"Agro Sarnese-Nocerino DOP, Campania", it:"Agro Sarnese-Nocerino DOP, Campania"},
+        lot:"SM-2026-0814", hs:"2002.10", supplier:"Cooperativa Agricola Valle del Sarno"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"EU e-Ambrosia + ISMECERT OdC certificate OCR + SIAN Sugar Registry", it:"EU e-Ambrosia + OCR certificato OdC ISMECERT + Registro SIAN Zuccheri"}, note:{en:"DOP grower parcel registration and OdC lot certificate authenticated; zero sugar movements logged in SIAN.", it:"Iscrizione particelle DOP e certificato di lotto OdC autenticati; nessun movimento zuccheri in SIAN."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"Delegated Cassetto Fiscale XML inbound/outbound scan", it:"Scansione delegata FatturaPA XML attiva/passiva"}, note:{en:"Zero inbound invoices for E330 citric acid or bulk paste; tin can procurement matches contracted fresh tomato intake.", it:"Nessuna fattura passiva per acido citrico E330 o concentrato sfuso; acquisto barattoli coerente con conferimenti freschi."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 Open Banking grower payouts + ISMEA Campania price index", it:"Bonifici agricoltori PSD2 + listino ISMEA Campania"}, note:{en:"Direct SEPA settlements verified to 18 member farms; unit price aligns with ISMEA San Marzano DOP benchmarks.", it:"Bonifici SEPA diretti verificati verso 18 aziende agricole socie; prezzo coerente con listini ISMEA San Marzano DOP."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (Sentinel-2 & PRISMA)", it:"Agronomia Satellitare (Sentinel-2 e PRISMA)"}, source:{en:"Sentinel-2 Red-Edge/SWIR irrigation + AGEA Fascicolo Aziendale", it:"Irrigazione Sentinel-2 Red-Edge/SWIR + Fascicolo Aziendale AGEA"}, note:{en:"42 ha of declared parcels verified under active summer irrigation; estimated 2,940 t harvest comfortably covers lot.", it:"42 ha dichiarati verificati sotto irrigazione estiva attiva; resa stimata di 2.940 t copre ampiamente il lotto."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"ISO 17712 container seals + ADM export manifest", it:"Sigilli container ISO 17712 + manifesto export ADM"}, note:{en:"Container seals and net pallet weight match cannery lot ledger within 0.2% tolerance.", it:"Sigilli container e peso netto pallet corrispondono al registro di stabilimento entro 0,2%."}},
+      lab:{status:'verified', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"SSR/SNP DNA + MC-ICP-MS 87Sr/86Sr + LC-co-IRMS", it:"DNA SSR/SNP + MC-ICP-MS 87Sr/86Sr + LC-co-IRMS"}, note:{en:"100% San Marzano 2 microsatellite match; Vesuvian 87Sr/86Sr ratio confirmed; citric acid δ13C = -26.4‰ (100% natural).", it:"Corrispondenza 100% microsatelliti San Marzano 2; rapporto vesuviano 87Sr/86Sr confermato; δ13C acido citrico = -26,4‰ (naturale)."}}
+    }
+  },
+  {
+    id:'t2', category:'tomato', code:'T3', color:'#b8862b', iconVar:'warn',
+    tag:{en:"Additive-Adjusted / Reconstituted", it:"Corretto con Additivi / Ricostituito"},
+    title:{en:"Rustica Passata di Pomodoro, Glass Bottles (700g)", it:"Passata Rustica di Pomodoro, Bottiglie Vetro (700g)"},
+    desc:{en:"Processed in Emilia-Romagna from Italian tomatoes, but FatturaPA XML mining detected inbound industrial citric acid (E330) used to standardize pH.",
+          it:"Trasformata in Emilia-Romagna da pomodori italiani, ma l'analisi FatturaPA XML ha rilevato acquisti di acido citrico industriale (E330) per standardizzare il pH."},
+    example:{en:"Biosynthetic citric acid fermented on corn/cane substrates exhibits a distinct C4 carbon isotope signature (δ13C > -23.9‰) detectable via LC-co-IRMS.",
+             it:"L'acido citrico biosintetico fermentato su substrati di mais/canna mostra una firma isotopica C4 (δ13C > -23,9‰) rilevabile via LC-co-IRMS."},
+    po:{product:{en:"Passata di Pomodoro, 700g glass jars", it:"Passata di Pomodoro, bottiglie vetro 700g"},
+        volume:{en:"24,000 bottles (16,800 kg)", it:"24.000 bottiglie (16.800 kg)"},
+        origin:{en:"100% Italian tomatoes claimed, no additives implied", it:"Dichiarato 100% pomodori italiani, senza additivi impliciti"},
+        lot:"PS-2026-0319", hs:"2002.90", supplier:"Conserve Padane Srl"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Sugar Registry & business registry", it:"Registro SIAN Zuccheri e registro imprese"}, note:{en:"Registered Italian processor; zero sucrose additions logged in SIAN.", it:"Trasformatore italiano registrato; nessuna aggiunta di saccarosio in SIAN."}},
+      sdi:{status:'flagged', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"FatturaPA XML inbound raw-material line items", it:"Righe fatture passive materie prime FatturaPA XML"}, note:{en:"Inbound XML invoices show 450 kg of food-grade E330 citric acid delivered prior to this bottling run; must be declared on label.", it:"Fatture XML passive mostrano 450 kg di acido citrico E330 consegnati prima di questo lotto; va dichiarato in etichetta."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 bank transfers + ISMEA Northern Italy tomato price", it:"Bonifici PSD2 + listino ISMEA pomodoro Nord Italia"}, note:{en:"Verified payments to Emilia-Romagna tomato POs (Organizzazioni di Produttori).", it:"Pagamenti verificati verso Organizzazioni di Produttori dell'Emilia-Romagna."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (Sentinel-2 & PRISMA)", it:"Agronomia Satellitare (Sentinel-2 e PRISMA)"}, source:{en:"Sentinel-2 summer canopy vigor across contracted parcels", it:"Vigore estivo Sentinel-2 sulle particelle contrattualizzate"}, note:{en:"Contracted acreage yield matches raw tomato intake volume.", it:"La resa degli ettari contrattualizzati corrisponde ai conferimenti di pomodoro fresco."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Container seals & bill-of-lading weights", it:"Sigilli container e pesi polizza di carico"}, note:{en:"Physical shipment count and weight match export packing list.", it:"Conteggio fisico e peso corrispondono alla packing list di esportazione."}},
+      lab:{status:'pending', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"LC-co-IRMS δ13C citric acid & 1H-NMR HMF assay", it:"Analisi LC-co-IRMS δ13C acido citrico e 1H-NMR HMF"}, note:{en:"Importer requested LC-co-IRMS test to confirm whether E330 was used in this specific batch.", it:"L'importatore ha richiesto il test LC-co-IRMS per verificare l'uso di E330 in questo specifico lotto."}}
+    }
+  },
+  {
+    id:'t3', category:'tomato', code:'T0', color:'#b7312c', iconVar:'bad',
+    tag:{en:"Rejected — False Origin / Cultivar Fraud", it:"Respinto — Falsa Origine / Frode Cultivar"},
+    title:{en:"Peeled Plum Tomatoes Labeled '100% San Marzano Style / Italian'", it:"Pomodori Pelati Etichettati '100% Italiano / Tipo San Marzano'"},
+    desc:{en:"Customs manifests and isotopic testing expose non-Italian concentrated paste and Roma plum tomatoes packed in Italy under a false Italian origin claim.",
+          it:"Manifesti doganali e test isotopici rivelano concentrato non italiano e pomodori Roma confezionati in Italia con falsa dichiarazione di origine italiana."},
+    example:{en:"Mirrors real-world seizures where imported non-EU tomato paste drums are diluted, blended with round/Roma tomatoes, and sold as 100% Italian.",
+             it:"Ricalca sequestri reali in cui fusti di concentrato extra-UE vengono diluiti, miscelati con pomodori tondi/Roma e venduti come 100% italiani."},
+    po:{product:{en:"Peeled Tomatoes in Puree, 800g cans", it:"Pomodori Pelati in Passata, lattine 800g"},
+        volume:{en:"48,000 cans (38,400 kg)", it:"48.000 lattine (38.400 kg)"},
+        origin:{en:"\"100% Pomodori Italiani\" claimed on front label", it:"\"100% Pomodori Italiani\" dichiarato in etichetta"},
+        lot:"IT-2026-0991", hs:"2002.10", supplier:"Export Sud Conserve"},
+    evidence:{
+      reg:{status:'flagged', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"EU e-Ambrosia & AGEA grower declarations", it:"EU e-Ambrosia e dichiarazioni coltivatori AGEA"}, note:{en:"No registered San Marzano DOP parcels or sufficient Italian grower contracts linked to this lot.", it:"Nessuna particella San Marzano DOP registrata ne contratti sufficienti con agricoltori italiani."}},
+      sdi:{status:'flagged', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"FatturaPA XML + packaging ratio audit", it:"FatturaPA XML + audit rapporti di confezionamento"}, note:{en:"Inbound tin can volume exceeds declared Italian fresh tomato purchases by 340%.", it:"Il volume di barattoli acquistati supera del 340% gli acquisti dichiarati di pomodoro fresco italiano."}},
+      fin:{status:'flagged', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 wire trace + ISMEA wholesale floor", it:"Tracciamento bonifici PSD2 + listino minimo ISMEA"}, note:{en:"Outbound invoice price is 38% below ISMEA Italian peeled-tomato production cost floor.", it:"Prezzo di vendita inferiore del 38% rispetto al costo minimo di produzione ISMEA."}},
+      sat:{status:'flagged', label:{en:"Satellite Agronomy (Sentinel-2 & PRISMA)", it:"Agronomia Satellitare (Sentinel-2 e PRISMA)"}, source:{en:"Sentinel-2 parcel check on declared farms", it:"Verifica satellitare Sentinel-2 sui terreni dichiarati"}, note:{en:"Two declared supplier parcels were planted with winter wheat, not summer irrigated tomatoes.", it:"Due particelle dichiarate risultano coltivate a grano invernale, non a pomodoro irriguo estivo."}},
+      custody:{status:'flagged', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"ADM port import bills of lading", it:"Polizze di carico importazione portuale ADM"}, note:{en:"ADM logs show 22 tons of non-EU triple-concentrate tomato paste cleared by the packer 11 days prior.", it:"I registri ADM mostrano 22 tonnellate di triplo concentrato extra-UE sdoganate 11 giorni prima."}},
+      lab:{status:'verified', label:{en:"ISO 17025 Lab Forensics", it:"Analisi Forensi ISO 17025"}, source:{en:"SSR DNA + 87Sr/86Sr + 1H-NMR HMF", it:"DNA SSR + 87Sr/86Sr + 1H-NMR HMF"}, note:{en:"Confirms Roma VF cultivar (not San Marzano), non-Italian 87Sr/86Sr signature, and elevated HMF from reconstituted paste.", it:"Conferma cultivar Roma VF (non San Marzano), firma isotopica 87Sr/86Sr non italiana e HMF elevato da concentrato ricostituito."}}
+    }
+  },
+
+  /* --- OLIVE OIL --- */
+  {
+    id:'o1', category:'olive', code:'O1', color:'#1f6b3a', iconVar:'good',
+    tag:{en:"DOP/IGP Single-Estate Lab-Verified", it:"DOP/IGP Singola Tenuta Lab-Verified"},
+    title:{en:"Olio Extra Vergine di Oliva Terra di Bari DOP (500ml)", it:"Olio Extra Vergine di Oliva Terra di Bari DOP (500ml)"},
+    desc:{en:"100% Coratina single-estate EVOO verified via SIAN 6-hour mill logs, VHR tree-crown yield modeling, sesquiterpene GC-MS, and IOC sensory panel.",
+          it:"Olio EVO monocultivar Coratina verificato tramite registri frantoio SIAN (regola 6 ore), resa chiome VHR, sesquiterpeni GC-MS e panel sensoriale COI."},
+    example:{en:"Sesquiterpene hydrocarbons (α-copaene, (+)-cyclosativene) remain stable during storage and pinpoint both olive cultivar and Apulian terroir with >95% accuracy.",
+             it:"Gli idrocarburi sesquiterpenici (α-copaene, (+)-ciclosativene) restano stabili nel tempo e identificano cultivar e terroir pugliese con accuratezza >95%."},
+    po:{product:{en:"Terra di Bari DOP EVOO, 500ml dark glass", it:"Olio EVO Terra di Bari DOP, bottiglie scure 500ml"},
+        volume:{en:"6,000 bottles (3,000 L)", it:"6.000 bottiglie (3.000 L)"},
+        origin:{en:"Terra di Bari DOP, Puglia (Coratina cultivar)", it:"Terra di Bari DOP, Puglia (cultivar Coratina)"},
+        lot:"OB-2026-0112", hs:"1509.20", supplier:"Frantoio Oleario Murgia"},
+    evidence:{
+      reg:{status:'confirmed', label:{en:"Registries (SIAN, e-Ambrosia & OdC)", it:"Registri (SIAN, e-Ambrosia e OdC)"}, source:{en:"SIAN Registro Telematico dell'Olio (6-hr rule) + CSQA DOP cert", it:"Registro Telematico dell'Olio SIAN (regola 6 ore) + cert. DOP CSQA"}, note:{en:"Olive harvest delivery and mill pressing logged in SIAN within mandatory 6-hour window; DOP lot certified.", it:"Consegna olive e molitura registrate in SIAN entro le 6 ore obbligatorie; lotto DOP certificato."}},
+      sdi:{status:'confirmed', label:{en:"Tax & Invoice Mining (FatturaPA XML)", it:"Fatturazione Elettronica (FatturaPA XML)"}, source:{en:"Delegated FatturaPA XML mill & bottling audit", it:"Audit delegato FatturaPA XML frantoio e imbottigliamento"}, note:{en:"Zero inbound bulk oil or seed oil invoices; 6,000 dark glass bottles and DOP neck labels match tank output.", it:"Nessuna fattura passiva per olio sfuso o di semi; 6.000 bottiglie scure e fascette DOP coerenti con cisterna."}},
+      fin:{status:'confirmed', label:{en:"Banking & Price Benchmarks (PSD2 & ISMEA)", it:"Banche e Listini (PSD2 e ISMEA)"}, source:{en:"PSD2 bank trace + ISMEA Bari DOP EVOO price index", it:"Tracciamento PSD2 + listino ISMEA Olio DOP Bari"}, note:{en:"Direct milling and estate accounting verified; unit price (€11.40/L bulk equiv.) aligns with ISMEA Bari DOP index.", it:"Contabilita diretta tenuta/frantoio verificata; prezzo unitario coerente con listino ISMEA DOP Bari."}},
+      sat:{status:'confirmed', label:{en:"Satellite Agronomy (VHR & Sentinel-2)", it:"Agronomia Satellitare (VHR e Sentinel-2)"}, source:{en:"30cm VHR tree-crown segmentation + Sentinel-2 fPAR", it:"Segmentazione chiome VHR 30cm + Sentinel-2 fPAR"}, note:{en:"1,420 Coratina olive trees mapped across 11 ha; 2025/26 'anno di carica' yield cap (3,850 L) comfortably covers lot.", it:"1.420 ulivi Coratina mappati su 11 ha; tetto resa annata di carica (3.850 L) copre ampiamente il lotto."}},
+      custody:{status:'confirmed', label:{en:"Customs & Chain-of-Custody (ADM)", it:"Dogane e Catena di Custodia (ADM)"}, source:{en:"Nitrogen-blanketed tank ID + ISO 17712 container seal", it:"ID cisterna sotto azoto + sigillo container ISO 17712"}, note:{en:"Tank-to-bottle mass balance and export seal verified without discrepancy.", it:"Bilancio di massa cisterna-bottiglia e sigillo export verificati senza discrepanze."}},
+      lab:{status:'verified', label:{en:"ISO 17025 /
