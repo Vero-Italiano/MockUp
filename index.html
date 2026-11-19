@@ -16,7 +16,7 @@
     :root:not([data-theme="light"]){
       --bg:#14201a;--card-bg:#1c2b23;--ink:#eef2ee;--muted:#9fb0a5;--line:#2e4136;
       --green:#4f9464;--green-light:#22362a;--blue:#4a92b8;--blue-light:#1d323d;
-      --gold:#d9a94b;--gold-light:#3a2f18;--red-it:#e2665f;--red-light:#A3a2220;
+      --gold:#d9a94b;--gold-light:#3a2f18;--red-it:#e2665f;--red-light:#3a2220;
       --purple:#9b8ac4;--purple-light:#2b253a;
       --panel-bg:#233229;--shadow:0 4px 18px rgba(0,0,0,0.35);
     }
@@ -924,3 +924,344 @@ function renderRatingLegend(){
 }
 
 function renderSourcesPanel(){
+  var panel = document.getElementById("sources-panel");
+  panel.classList.toggle("open", sourcesPanelOpen);
+  if(!sourcesPanelOpen) return;
+  var cardsHtml = infoSourcesDirectory.map(function(src){
+    return '<div class="sp-card"><strong>' + src.title[lang] + '</strong><div class="sp-feeds">' + src.feeds[lang] + '</div><p>' + src.desc[lang] + '</p></div>';
+  }).join("");
+  panel.innerHTML = '<div class="sp-head"><h3>' + t().sourcesPanelTitle + '</h3><button class="sources-toggle-btn" onclick="toggleSourcesPanel()">' + t().sourcesPanelClose + '</button></div><div class="sp-grid">' + cardsHtml + '</div>';
+}
+
+function toggleSourcesPanel(){
+  sourcesPanelOpen = !sourcesPanelOpen;
+  renderStaticText();
+  renderSourcesPanel();
+}
+
+function setCategory(cid){
+  activeCategory = cid;
+  renderCategoryBar();
+  renderRatingLegend();
+  renderIntakeList();
+  renderGrid();
+  renderLabQueue();
+  renderBreadcrumbs();
+}
+
+function renderPendingList(){
+  var sectionEl = document.getElementById("pending-section");
+  var listEl = document.getElementById("pending-list");
+  var busy = (parsingId !== null || revealingId !== null);
+  var pending = visibleLots().filter(function(l){ return importedIds.indexOf(l.id) === -1; });
+  if(pending.length === 0){
+    sectionEl.innerHTML = "";
+    listEl.innerHTML = '<div class="all-imported-note">' + t().allImported + '</div>';
+    return;
+  }
+  sectionEl.innerHTML = '<div class="pending-section-h">' + t().pendingSection + '</div>';
+  listEl.innerHTML = "";
+  pending.forEach(function(lot){
+    var row = document.createElement("div");
+    row.className = "pending-row";
+    row.innerHTML = '<div class="pending-thumb">' + productSVG(lot.category, lot.iconVar, 30) + '</div><div><div class="pending-title">' + lot.title[lang] + '</div><div class="pending-sub">' + categories[lot.category].label[lang] + ' &middot; PO ' + lot.po.lot + '</div></div><button class="pending-upload-btn"' + (busy ? " disabled" : "") + ' onclick="uploadPO(\'' + lot.id + '\')">&#8593; ' + t().uploadAction + '</button>';
+    listEl.appendChild(row);
+  });
+}
+
+function renderIntakeList(){
+  renderPendingList();
+  var container = document.getElementById("intake-list");
+  var visibleIds = importedIds.filter(function(id){
+    var l = lots.find(function(x){ return x.id === id; });
+    return l && (activeCategory === "all" || l.category === activeCategory);
+  });
+  if(visibleIds.length === 0){
+    container.innerHTML = '<div class="empty-intake">' + t().emptyIntake + '</div>';
+    return;
+  }
+  container.innerHTML = "";
+  visibleIds.forEach(function(id){
+    var lot = lots.find(function(l){ return l.id === id; });
+    var card = document.createElement("div");
+    card.className = "intake-card" + (openIntakeId === lot.id ? " open" : "");
+    var justTag = (id === importedIds[0] && (revealingId === id || parsingId === id)) ? '<span class="just-imported">' + t().justImported + '</span>' : "";
+    card.innerHTML = '<div class="intake-head" onclick="toggleIntake(\'' + lot.id + '\')"><div class="intake-thumb">' + productSVG(lot.category, lot.iconVar, 34) + '</div><div><div class="intake-head-title">' + lot.title[lang] + justTag + '</div><div class="intake-head-sub">' + categories[lot.category].label[lang] + ' &middot; PO ' + lot.po.lot + ' &middot; ' + t().clickToExpand + '</div></div><div class="intake-shield">' + gradeBadgeHTML(lot, 32) + '</div><span class="intake-caret">&#9654;</span></div><div class="intake-body">' + intakeBodyHTML(lot) + '</div>';
+    container.appendChild(card);
+  });
+}
+
+function toggleIntake(id){
+  openIntakeId = (openIntakeId === id) ? null : id;
+  renderIntakeList();
+  renderBreadcrumbs();
+}
+
+function intakeBodyHTML(lot){
+  if(parsingId === lot.id){
+    return '<div class="parsing-row"><span class="spin"></span>' + t().parsing + '</div>';
+  }
+  var po = lot.po;
+  var poRows = [
+    [t().poProduct, po.product[lang]],
+    [t().poVolume, po.volume[lang]],
+    [t().poOrigin, po.origin[lang]],
+    [t().poLot, po.lot],
+    [t().poHs, po.hs],
+    [t().poSupplier, po.supplier]
+  ].map(function(r){ return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>"; }).join("");
+
+  var isRevealing = (revealingId === lot.id);
+  var reqRows = sixKeys.map(function(k){
+    var e = lot.evidence[k];
+    var lbl = pillarMeta[k][lang];
+    if(isRevealing && checkedKeys.indexOf(k) === -1){
+      return '<div class="evidence-row"><span class="ev-dot dot pending"></span><div class="ev-body"><h5>' + lbl + '</h5><p class="checking">' + t().checking + '</p></div></div>';
+    }
+    var cls = statusClass(e.status);
+    return '<div class="evidence-row"><span class="ev-dot dot ' + cls + '"></span><div class="ev-body"><h5>' + lbl + '</h5><div class="ev-source">' + e.source[lang] + '</div><p>' + e.note[lang] + '</p></div><span class="ev-status ' + cls + '">' + t().statusLabel[e.status] + '</span></div>';
+  }).join("");
+
+  var resultHtml = "";
+  if(!(isRevealing && checkedKeys.length < sixKeys.length)){
+    var resultText = t().resultLine.replace("{R}", lot.grade + (lot.custodyFlag ? " + Custody Flag (!)" : "")).replace("{T}", lot.tag[lang]);
+    resultHtml = '<div class="section-h">' + t().resultSection + '</div><div class="modal-example" style="display:flex;align-items:center;gap:12px;margin-bottom:0;"><div style="flex-shrink:0;display:flex;align-items:center;gap:6px;">' + gradeBadgeHTML(lot, 34) + '</div><span>' + resultText + '</span></div><div class="buyer-note">' + t().buyerDecisionNote + '</div><div class="flow-note"><a href="#" onclick="event.preventDefault(); openModal(\'' + lot.id + '\');">' + t().openInResults + '</a></div>';
+  }
+  return '<div class="section-h">' + t().poSection + '</div><table class="po-table">' + poRows + '</table><div class="section-h">' + t().reqSection + '</div>' + reqRows + resultHtml;
+}
+
+function uploadPO(id){
+  if(importedIds.indexOf(id) !== -1) return;
+  var lot = lots.find(function(l){ return l.id === id; });
+  if(!lot) return;
+  importedIds.unshift(lot.id);
+  openIntakeId = lot.id;
+  parsingId = lot.id;
+  revealingId = null;
+  checkedKeys = [];
+  renderIntakeList();
+  renderBreadcrumbs();
+  setTimeout(function(){
+    parsingId = null;
+    revealingId = lot.id;
+    renderIntakeList();
+    revealNext(lot.id, sixKeys, 0);
+  }, 650);
+}
+
+function revealNext(lotId, keys, idx){
+  if(idx >= keys.length){
+    revealingId = null;
+    renderIntakeList();
+    return;
+  }
+  checkedKeys.push(keys[idx]);
+  renderIntakeList();
+  setTimeout(function(){ revealNext(lotId, keys, idx + 1); }, 320);
+}
+
+function renderGrid(){
+  var grid = document.getElementById("lot-grid");
+  grid.innerHTML = "";
+  visibleLots().forEach(function(lot){
+    var card = document.createElement("div");
+    card.className = "lot-card";
+    card.onclick = function(){ openModal(lot.id); };
+    var labBadge = lot.evidence.lab.status === "verified" ? '<div class="lot-lab-badge" title="' + t().labVerified + '">&#129514;</div>' : "";
+    var dots = sixKeys.map(function(k){
+      var st = lot.evidence[k].status;
+      return '<span class="dot ' + statusClass(st) + '" title="' + pillarMeta[k][lang] + ": " + t().statusLabel[st] + '"></span>';
+    }).join("");
+    card.innerHTML = '<div class="lot-img-wrap"><div class="lot-shield">' + gradeBadgeHTML(lot, 35) + '</div>' + labBadge + productSVG(lot.category, lot.iconVar, 84) + '<span class="lot-cat-pill">' + categories[lot.category].label[lang] + '</span></div><div class="lot-body"><div class="lot-tag">' + gradeText(lot) + ' &middot; ' + lot.tag[lang] + '</div><div class="lot-title">' + lot.title[lang] + '</div><div class="lot-status-row">' + dots + '<span class="lot-status-label">' + t().sixDotsHint + '</span></div></div>';
+    grid.appendChild(card);
+  });
+}
+
+function evidenceRowsHTML(lot){
+  return sixKeys.map(function(k){
+    var e = lot.evidence[k];
+    var cls = statusClass(e.status);
+    return '<div class="evidence-row"><span class="ev-dot dot ' + cls + '"></span><div class="ev-body"><h5>' + pillarMeta[k][lang] + '</h5><div class="ev-source">' + e.source[lang] + '</div><p>' + e.note[lang] + '</p></div><span class="ev-status ' + cls + '">' + t().statusLabel[e.status] + '</span></div>';
+  }).join("");
+}
+
+function openModal(id){
+  openLotId = id;
+  certOpen = false;
+  renderModal();
+  document.getElementById("overlay").classList.add("open");
+  renderBreadcrumbs();
+}
+
+function renderModal(){
+  if(!openLotId) return;
+  var lot = lots.find(function(l){ return l.id === openLotId; });
+  var body = document.getElementById("modal-content");
+  var custodyAlertHtml = lot.custodyFlag
+    ? '<div class="custody-alert"><strong>&#9888; ' + t().custodyFlagTitle + '</strong>' + lot.evidence.custody.note[lang] + '</div>'
+    : "";
+  var labBadgeHtml = lot.evidence.lab.status === "verified"
+    ? '<div class="lab-strip"><strong>&#129514; ' + t().labVerified + '</strong>' + lot.evidence.lab.note[lang] + '</div>'
+    : (lot.evidence.lab.status === "pending" ? '<div class="lab-strip pend"><strong>&#8987; ' + t().labPending + '</strong>' + lot.evidence.lab.note[lang] + '</div>' : "");
+  body.innerHTML = '<div class="modal-top"><div class="modal-thumb">' + productSVG(lot.category, lot.iconVar, 48) + '</div><div class="modal-shield">' + gradeBadgeHTML(lot, 42) + '</div><div><div class="modal-tag">' + categories[lot.category].label[lang] + ' &middot; ' + gradeText(lot) + ' &middot; ' + lot.tag[lang] + '</div><h3 class="modal-title">' + lot.title[lang] + '</h3></div></div><p class="modal-desc">' + lot.desc[lang] + '</p>' + custodyAlertHtml + '<div class="modal-example"><strong>' + t().context + '</strong>' + lot.example[lang] + '</div><div class="section-h">' + t().reqSection + '</div>' + evidenceRowsHTML(lot) + labBadgeHtml + '<div class="buyer-note">' + t().buyerDecisionNote + '</div><button class="cert-btn" id="cert-toggle-btn" onclick="toggleCert()">' + t().viewCert + '</button><div id="cert-area"></div>';
+  document.getElementById("overlay").classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("overlay").classList.remove("open");
+  openLotId = null;
+  renderBreadcrumbs();
+}
+document.getElementById("overlay").addEventListener("click", function(e){ if(e.target.id === "overlay") closeModal(); });
+
+function toggleCert(){
+  certOpen = !certOpen;
+  renderCert();
+  renderBreadcrumbs();
+  if(certOpen){
+    setTimeout(function(){
+      var area = document.getElementById("cert-area");
+      if(area) area.scrollIntoView({behavior:"smooth", block:"start"});
+    }, 30);
+  }
+}
+
+function renderCert(){
+  var area = document.getElementById("cert-area");
+  var btn = document.getElementById("cert-toggle-btn");
+  if(!area) return;
+  if(!certOpen){ area.innerHTML = ""; if(btn) btn.textContent = t().viewCert; return; }
+  if(btn) btn.textContent = t().hideCert;
+  var lot = lots.find(function(l){ return l.id === openLotId; });
+  if(!lot) return;
+  var hasFlag = sixKeys.some(function(k){ return lot.evidence[k].status === "flagged"; });
+  var overallStatus = hasFlag ? t().discrepancies : t().noDiscrepancies;
+  var borderCol = hasFlag ? "var(--gold)" : "var(--green)";
+  var anchorHash = certHash(lot);
+  var sourceRows = sixKeys.map(function(k){
+    return '<div class="cert-row"><span>' + pillarMeta[k][lang] + '</span><span>' + t().statusLabel[lot.evidence[k].status] + '</span></div>';
+  }).join("");
+  area.innerHTML = '<div class="cert" style="border-color:' + borderCol + ';"><div class="cert-head"><h4>' + t().certTitle + '</h4><span class="cert-flag" style="color:' + borderCol + ';">' + overallStatus + '</span></div><div class="cert-row"><span>' + t().certCategory + '</span><span>' + categories[lot.category].label[lang] + '</span></div><div class="cert-row"><span>' + t().certProduct + '</span><span>' + lot.title[lang] + '</span></div><div class="cert-row"><span>' + t().poLot + '</span><span>' + lot.po.lot + '</span></div><div class="cert-row"><span>' + t().certLevel + '</span><span><strong>' + gradeText(lot) + ' - ' + lot.tag[lang] + '</strong></span></div><div class="cert-row"><span>' + t().certCustodyFlag + '</span><span>' + (lot.custodyFlag ? t().custodyMismatch : t().custodyClean) + '</span></div>' + sourceRows + '<div class="cert-row"><span>' + t().certLab + '</span><span>' + (lot.evidence.lab.status === "verified" ? t().certYes : t().certNo) + '</span></div><div class="cert-row"><span>' + t().certIssued + '</span><span>' + t().certIssuedNote + '</span></div><div class="cert-row" style="border-bottom:none;"><span>' + t().certAnchor + '</span><span style="font-family:monospace;font-size:12px;" title="' + t().certAnchorNote + '">' + anchorHash + '</span></div></div>';
+}
+
+function certHash(lot){
+  var src = lot.id + "|" + lot.grade + "|" + lot.custodyFlag + "|" + lot.po.lot + "|" + sixKeys.map(function(k){ return lot.evidence[k].status; }).join("|");
+  var h = 0;
+  for(var i = 0; i < src.length; i++){ h = ((h << 5) - h + src.charCodeAt(i)) | 0; }
+  var hex = (h >>> 0).toString(16);
+  while(hex.length < 8){ hex = "0" + hex; }
+  return "0x" + hex + "..." + lot.po.lot.replace(/[^A-Za-z0-9]/g,"").slice(-6).toLowerCase();
+}
+
+function renderLabQueue(){
+  var container = document.getElementById("lab-queue");
+  var scoped = visibleLots();
+  var pending = scoped.filter(function(l){ return l.evidence.lab.status === "pending"; });
+  var verified = scoped.filter(function(l){ return l.evidence.lab.status === "verified"; });
+  var html = "";
+  if(pending.length === 0 && verified.length === 0){
+    html += '<div class="empty-queue">' + t().emptyQueue + '</div>';
+  }
+  pending.forEach(function(lot){
+    var subText = t().testRequested.replace("{CAT}", categories[lot.category].label[lang]).replace("{R}", lot.grade);
+    var methods = categories[lot.category].labMethods[lang];
+    html += '<div class="queue-card"><div class="queue-top"><div class="queue-thumb">' + productSVG(lot.category, lot.iconVar, 36) + '</div><div><div class="queue-title">' + lot.title[lang] + '</div><div class="queue-sub">' + subText + '</div></div></div><div class="lab-form"><div><label>' + t().method + '</label><select id="method-' + lot.id + '">' + methods.map(function(o){ return "<option>" + o + "</option>"; }).join("") + '</select></div><div><label>' + t().result + '</label><select id="result-' + lot.id + '">' + t().resultOptions.map(function(o){ return "<option>" + o + "</option>"; }).join("") + '</select></div><div class="full"><label>' + t().custody + '</label><select id="custody-' + lot.id + '">' + t().custodyOptions.map(function(o){ return "<option>" + o + "</option>"; }).join("") + '</select></div></div><button class="submit-btn" onclick="submitLabResult(\'' + lot.id + '\')">' + t().submitBtn + '</button></div>';
+  });
+  verified.forEach(function(lot){
+    html += '<div class="queue-card" style="border-left-color:var(--green);opacity:.82;"><div class="queue-top"><div class="queue-thumb">' + productSVG(lot.category, lot.iconVar, 36) + '</div><div><div class="queue-title">' + lot.title[lang] + '</div><div class="queue-sub">' + categories[lot.category].label[lang] + ' &middot; ' + gradeText(lot) + ' &middot; ' + lot.tag[lang] + '</div></div><span class="done-tag">' + t().submitted + '</span></div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function submitLabResult(id){
+  var lot = lots.find(function(l){ return l.id === id; });
+  var resultIdx = document.getElementById("result-" + id).selectedIndex;
+  var custodyIdx = document.getElementById("custody-" + id).selectedIndex;
+  var methodIdx = document.getElementById("method-" + id).selectedIndex;
+  var methodText = categories[lot.category].labMethods[lang][methodIdx];
+  if(resultIdx === 0 && custodyIdx === 0){
+    lot.evidence.lab.status = "verified";
+    lot.evidence.lab.note = {
+      en: methodText + " confirms finding consistent with declared origin and composition. ISO 17025 chain of custody verified.",
+      it: methodText + " conferma riscontro coerente con origine e composizione dichiarate. Catena di custodia ISO 17025 verificata."
+    };
+    if(lot.id === "w-b" || lot.id === "o-b"){
+      lot.grade = "A";
+      lot.color = "#1f6b3a";
+      lot.tag = {en:"Fully Verified (Lab-Confirmed Origin)", it:"Pienamente Verificato (Origine Confermata in Lab)"};
+    }
+  } else {
+    lot.evidence.lab.status = "flagged";
+    lot.grade = "G";
+    lot.color = "#6b1414";
+    lot.tag = {en:"False Origin / Composition Variance", it:"Falsa Origine / Difformita Compositiva"};
+    lot.evidence.lab.note = {
+      en: methodText + " finding: " + t().resultOptions[resultIdx].toLowerCase() + ". Custody: " + t().custodyOptions[custodyIdx].toLowerCase() + ".",
+      it: methodText + " riscontro: " + t().resultOptions[resultIdx].toLowerCase() + ". Custodia: " + t().custodyOptions[custodyIdx].toLowerCase() + "."
+    };
+  }
+  renderLabQueue();
+  renderGrid();
+  if(openIntakeId === id) renderIntakeList();
+}
+
+function setView(view){
+  currentView = view;
+  ["intake","importer","lab"].forEach(function(v){
+    document.getElementById("view-" + v).classList.toggle("active", v === view);
+    document.getElementById("btn-" + v).classList.toggle("active", v === view);
+  });
+  renderBreadcrumbs();
+}
+
+function setLang(newLang){
+  lang = newLang;
+  document.getElementById("btn-en").classList.toggle("active", lang === "en");
+  document.getElementById("btn-it").classList.toggle("active", lang === "it");
+  document.documentElement.setAttribute("lang", lang);
+  renderStaticText();
+  renderCategoryBar();
+  renderSourcesPanel();
+  renderRatingLegend();
+  renderIntakeList();
+  renderGrid();
+  renderLabQueue();
+  if(openLotId){ renderModal(); renderCert(); }
+  renderBreadcrumbs();
+}
+
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  document.getElementById("theme-toggle").innerHTML = theme === "dark" ? "&#9728;&#65039;" : "&#127769;";
+  try{ localStorage.setItem("vi-proto-theme", theme); }catch(e){}
+}
+
+function toggleTheme(){
+  var current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  applyTheme(current === "dark" ? "light" : "dark");
+}
+
+function initApp(){
+  var saved = "light";
+  try{ saved = localStorage.getItem("vi-proto-theme") || "light"; }catch(e){}
+  applyTheme(saved);
+  renderStaticText();
+  renderCategoryBar();
+  renderSourcesPanel();
+  renderRatingLegend();
+  renderIntakeList();
+  renderGrid();
+  renderLabQueue();
+  renderBreadcrumbs();
+  window.__VI_SCRIPT_OK = true;
+}
+
+initApp();
+</script>
+<script>
+if(!window.__VI_SCRIPT_OK){
+  document.getElementById("t-h1").textContent = "Script load error - please check that the full HTML file through </html> was pasted.";
+}
+</script>
+</body>
+</html>
